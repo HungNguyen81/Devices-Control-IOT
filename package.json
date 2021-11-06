@@ -1,0 +1,23 @@
+{
+  "name": "devices-control-iot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HungNguyen81/Devices-Control-IOT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HungNguyen81/Devices-Control-IOT/issues"
+  },
+  "homepage": "https://github.com/HungNguyen81/Devices-Control-IOT#readme",
+  "dependencies": {
+    "ejs": "^3.1.6",
+    "express": "^4.17.1"
+  }
+}
