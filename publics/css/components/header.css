@@ -1,0 +1,24 @@
+.header {
+    width: 100vw;
+    height: 100px;
+    background-color: #f88044d7;
+    z-index: 100;
+    position: sticky;
+    top: 0;
+}
+
+.header .header-title {
+    position: absolute;
+    top: 38px;
+    left: 170px;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #E84410;
+    font-size: 22px;
+}
+
+.header .logo {
+    height: 70px;
+    margin: 15px 30px;
+    border-radius: 10px;
+}

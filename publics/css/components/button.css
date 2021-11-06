@@ -1,0 +1,25 @@
+.btn{
+    height: 40px;
+    border-radius: 6px;
+    font-size: 15px;
+    padding: 0 16px;
+    position: absolute;
+    line-height: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+}
+.btn:hover{
+    filter: brightness(0.8);
+}
+.btn:active{
+    filter: brightness(0.5);
+}
+
+
+.btn-login{
+    background-color: #80B5E8;
+    color: #fff;
+    top: 30px;
+    right: 50px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
