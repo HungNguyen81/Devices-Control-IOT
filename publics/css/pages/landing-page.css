@@ -1,12 +1,12 @@
-body{
+body {
     overflow-x: hidden;
     height: 100vh;
 }
 
-.cover{
-    position: absolute;
-    top: 0;
-    left: 0;
+.cover {
+    /* position: absolute; */
+    /* top: 0; */
+    /* left: 0; */
     width: 100%;
     height: 100%;
     z-index: 0;
@@ -14,4 +14,24 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     background-position-y: -60px;
+}
+
+.cover>* {
+    color: #fff;
+    position: absolute;
+    right: 35px;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+.cover .cover-title-1 {
+    font-size: 50px;
+    top: 135px;
+}
+.cover .cover-title-2{
+    font-size: 35px;
+    top: 215px;
+}
+.cover-title-3{
+    font-size: 55px;
+    top: 280px;
 }
