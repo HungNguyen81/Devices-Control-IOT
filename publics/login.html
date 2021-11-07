@@ -9,6 +9,7 @@
             * {
                 padding: 0;
                 margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
             }
         </style>
     </head>
@@ -17,15 +18,20 @@
             <img src="./images/logo.png" alt="logo" class="logo">
             <div class="header-title">SMART CONTROL SYSTEM</div>
         </div>
-        <div class="login">
-            <div class="login-title">SMART CONTROL LOGIN</div>
-            <div class ="login-form">
-                <input class="login-user" type="text" placeholder="Tên đăng nhập"> 
-                <input class="login-pass"type="password" placeholder="Mật khẩu">
-                <div class="btn btn-form-login">Đăng nhập</div>
+        <div class="login-form-container">
+            <div class="login-form">
+                <h2>SMART CONTROL</h2>
+                <div class="form-input email">
+                    <input type="text" name="email" tabindex="1">
+                    <div class="lbl urs-label">Email</div>
                 </div>
+                <div class="form-input password">
+                    <input type="password" name="password" tabindex="2">
+                    <div class="lbl urs-label">Mật khẩu</div>
+                </div>
+                <p class="err-msg"></p>
+                <div class="btn btn-form-submit" tabindex="3">ĐĂNG NHẬP</div>
             </div>
-            
         </div>
         <div class="footer">
             <div class="logo">

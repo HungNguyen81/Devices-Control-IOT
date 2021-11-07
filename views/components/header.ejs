@@ -1,5 +1,7 @@
 <div class="header">
     <img src="/images/logo.png" alt="logo" class="logo">
     <div class="header-title">SMART CONTROL SYSTEM</div>
-    <a href="/login" class="btn btn-login">Đăng nhập</a>
+    <% if(!isHideLoginBtn) { %>
+        <a href="/login" class="btn btn-login">Đăng nhập</a>
+    <% } %>
 </div>

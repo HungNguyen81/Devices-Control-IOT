@@ -8,6 +8,7 @@
     font-family: Arial, Helvetica, sans-serif;
     cursor: pointer;
     text-decoration: none;
+    user-select: none;
 }
 .btn:hover{
     filter: brightness(0.8);

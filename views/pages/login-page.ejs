@@ -5,11 +5,26 @@
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
-        <!-- links -->
+        <link rel="stylesheet" href="/css/pages/login-page.css">
     </head>
     <body>
-        <%- include('../components/header') -%>
+        <%- include('../components/header', {isHideLoginBtn: true}) -%>
         <!-- form -->
+        <div class="login-form-container">
+            <div class="login-form">
+                <h2>SMART CONTROL</h2>
+                <div class="form-input email">
+                    <input type="text" name="email" tabindex="1">
+                    <div class="lbl urs-label">Email</div>
+                </div>
+                <div class="form-input password">
+                    <input type="password" name="password" tabindex="2">
+                    <div class="lbl urs-label">Mật khẩu</div>
+                </div>
+                <p class="err-msg"></p>
+                <div class="btn btn-form-submit" tabindex="3">ĐĂNG NHẬP</div>
+            </div>
+        </div>
         <%- include('../components/footer') -%>
     </body>
 </html>
