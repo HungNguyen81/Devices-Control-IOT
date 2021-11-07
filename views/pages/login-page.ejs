@@ -5,11 +5,19 @@
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
+        <link rel="stylesheet" href="./css/pages/login-page.css">
         <!-- links -->
     </head>
     <body>
         <%- include('../components/header') -%>
-        <!-- form -->
+        <div class="login">
+            <div class="login-title">SMART CONTROL LOGIN</div>
+            <div class ="login-form">
+                <input class="login-user" type="text" placeholder="Tên đăng nhập"> 
+                <input class="login-pass"type="password" placeholder="Mật khẩu">
+                <div class="btn btn-form-login">Đăng nhập</div>
+                </div>
+            </div>
         <%- include('../components/footer') -%>
     </body>
 </html>
