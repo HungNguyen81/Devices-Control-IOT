@@ -21,7 +21,7 @@ app.get('/', function (req, res) {
 
 //#region login
 app.get('/login', (req, res) => {
-  res.render('page/login-page');
+  res.render('pages/login-page');
 });
 
 // check form login
