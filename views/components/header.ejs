@@ -2,6 +2,10 @@
     <img src="/images/logo.png" alt="logo" class="logo">
     <div class="header-title">SMART CONTROL SYSTEM</div>
     <% if(!isHideLoginBtn) { %>
-        <a href="/login" class="btn btn-login">Đăng nhập</a>
+        <% if(!isLoggin) { %>
+            <a href="/login" class="btn btn-login">Đăng nhập</a>
+        <% } else { %>
+            <a href="/logout" class="btn btn-login">Đăng xuất</a>
+        <% } %>
     <% } %>
 </div>

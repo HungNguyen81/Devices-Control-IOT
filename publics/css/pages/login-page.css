@@ -77,9 +77,9 @@
 
 .login-form .form-input .lbl{
     position: absolute;
-    transform: translate(16px, -70px);
+    transform: translate(16px, -60px);
     background-color: #fff;
-    padding: 10px;
+    padding: 0 10px;
     font-size: 18px;
     font-weight: bold;
     color: #86BAEC;
@@ -118,4 +118,6 @@
     text-align: center;
     height: 50px;
     line-height: 50px;
+    outline: none;
+    border: none;
 }

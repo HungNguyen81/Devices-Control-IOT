@@ -1,7 +1,10 @@
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors');
 const app = express();
 
+app.use(cors());
+app.use(express.json());
 app.use(session({
   resave: true,
   saveUninitialized: true,
@@ -27,15 +30,21 @@ app.get('/login', (req, res) => {
 // check form login
 app.post('/login', (req, res) => {
   // set session
-  req.session.User = req.body.username;
+  // req.session.User = req.body.email;
 
-  // redirect to dashboard page if login successfully
-  //...
-  res.redirect('/dashboard');
+  console.log("body", req.body);
+  var email = req.body.email;
+  var password = req.body.password;
 
-  // else return error message
-  //...
-  res.status(400).json({ msg: 'Tên đăng nhập hoặc mật khẩu không chính xác.' });
+  if (email == "hung" && password == "123") {
+    // redirect to dashboard page if login successfully
+    res.status(200).end();
+
+  } else {
+    // else return error message
+    res.status(400).json({ msg: 'Tên đăng nhập hoặc mật khẩu không chính xác.' });
+  }
+
 })
 //#endregion
 
@@ -45,7 +54,7 @@ app.get('/dashboard', (req, res) => {
   // get session
 
   // if session available, render page, otherwise not
-  res.render('page/dashboard-page');
+  res.render('pages/dashboard-page');
 });
 //#endregion
 
