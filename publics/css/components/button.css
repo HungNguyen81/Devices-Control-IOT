@@ -1,4 +1,4 @@
-.btn{
+.btn {
     height: 40px;
     border-radius: 6px;
     font-size: 15px;
@@ -10,22 +10,24 @@
     text-decoration: none;
     user-select: none;
 }
-.btn:hover{
+
+.btn:hover {
     filter: brightness(0.8);
 }
-.btn:active{
+
+.btn:active {
     filter: brightness(0.5);
 }
 
-
-.btn-login{
+.btn-login {
     background-color: #80B5E8;
     color: #fff;
     top: 30px;
     right: 50px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-.btn-form-login{
+
+.btn-form-login {
     color: #FFFFFF;
     border-radius: 10px;
     font-size: 29;
@@ -33,4 +35,13 @@
     height: 60.8px;
     background-color: #FF681C;
     line-height: 60.8px;
-    }
+}
+
+.btn-dashboard{
+    top: 374px;
+    font-size: 18px;
+    height: 55px;
+    line-height: 55px;
+    padding: 0 24px;
+    background-color: #FF681C;
+}

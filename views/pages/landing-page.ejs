@@ -13,6 +13,9 @@
             <div class="cover-title-1">ỨNG DỤNG ĐIỀU KHIỂN THIẾT BỊ</div>
             <div class="cover-title-2">VÀ GIÁM SÁT NHIỆT ĐỘ, ĐỘ ẨM MÔI TRƯỜNG</div>
             <div class="cover-title-3">SMART CONTROL</div>
+            <% if(isLoggin) { %>
+                <a href="/dashboard" class="btn btn-dashboard">Tới trang điều khiển</a>
+            <% } %>
         </div>
         <%- include('../components/footer') -%>
     </body>
