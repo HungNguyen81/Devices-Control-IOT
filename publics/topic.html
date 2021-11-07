@@ -1,0 +1,92 @@
+<html>
+
+<head>
+    <title>TEST</title>
+    <link rel="stylesheet" href="./css/components/button.css">
+    <link rel="stylesheet" href="./css/components/header.css">
+    <link rel="stylesheet" href="./css/components/footer.css">
+    <link rel="stylesheet" href="./css/pages/topic-page.css">
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <img src="./images/logo.png" alt="logo" class="logo">
+        <div class="header-title">SMART CONTROL SYSTEM</div>
+    </div>
+    <div class="topics-container">
+        <!-- content -->
+
+        <h2>Biệt thự Đà Lạt</h2>
+
+        <div class="temp-humid">
+            <div class="charts">
+                <div class="chart-temp" id="temp"></div>
+                <div class="chart-humid" id="humid"></div>
+            </div>
+            <div class="current-data"></div>
+        </div>
+
+        <div class="devices">
+            <div class="device active">
+                <div class="status"></div>
+                <div class="device-name">Đèn phòng khách</div>
+                <div class="status-text">ON</div>
+                <label class="switch">
+                    <input type="checkbox" checked onclick="checkStatus(this)">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="device">
+                <div class="status"></div>
+                <div class="device-name">Đèn phòng ngủ</div>
+                <div class="status-text">OFF</div>
+                <label class="switch">
+                    <input type="checkbox" onclick="checkStatus(this)">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="device active">
+                <div class="status"></div>
+                <div class="device-name">Đèn phòng ăn</div>
+                <div class="status-text">ON</div>
+                <label class="switch">
+                    <input type="checkbox" checked onclick="checkStatus(this)">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="device">
+                <div class="status"></div>
+                <div class="device-name">Đèn phòng tắm</div>
+                <div class="status-text">OFF</div>
+                <label class="switch">
+                    <input type="checkbox" onclick="checkStatus(this)">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+
+    </div>
+    <div class="footer">
+        <div class="logo">
+            <img src="./images/logo.png" alt="logo">
+        </div>
+        <div class="footer-content">
+            <h2>Nhóm X - IT4735</h2>
+            <p>Nguyễn Ngọc Hưng - 2018xxxx</p>
+            <p>Nguyễn Tiến Anh - 2018xxxx</p>
+        </div>
+    </div>
+    <script src="./js/topic.js"></script>
+</body>
+
+</html>
