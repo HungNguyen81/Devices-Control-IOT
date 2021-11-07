@@ -17,6 +17,12 @@
     font-size: 22px;
 }
 
+.header p{
+    position: absolute;
+    top: 42px;
+    right: 182px;
+}
+
 .header .logo {
     height: 70px;
     margin: 15px 30px;

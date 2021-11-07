@@ -5,12 +5,18 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+// app.use(session({
+//   resave: true,
+//   saveUninitialized: true,
+//   secret: 'somesecret',
+//   cookie: 
+// }));
 app.use(session({
-  resave: true,
+  secret: 'iot secret',
+  resave: false,
   saveUninitialized: true,
-  secret: 'somesecret',
-  cookie: { maxAge: 60000 }
-}));
+  cookie: { maxAge: 60000 } //{ secure: true }
+}))
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -18,7 +24,10 @@ app.use(express.static(__dirname + '/publics'));
 
 //#region Landing page
 app.get('/', function (req, res) {
-  res.render('pages/landing-page');
+  if (req.session.User)
+    res.render('pages/landing-page', { isLoggin: true, name: req.session.Name });
+  else
+    res.render('pages/landing-page', { isLoggin: false, name: null });
 });
 //#endregion
 
@@ -29,15 +38,15 @@ app.get('/login', (req, res) => {
 
 // check form login
 app.post('/login', (req, res) => {
-  // set session
-  // req.session.User = req.body.email;
-
   console.log("body", req.body);
   var email = req.body.email;
   var password = req.body.password;
 
-  if (email == "hung" && password == "123") {
-    // redirect to dashboard page if login successfully
+  if (email == "hung" && password == "123") { //TODO: đoạn này thay bằng truy vấn csdl
+    // set session
+    req.session.User = req.body.email;
+    req.session.Name = 'Hung Nguyen Ngoc';    //TODO: đoạn này vào csdl tìm kiếm name của object có email của client
+
     res.status(200).end();
 
   } else {
@@ -48,13 +57,23 @@ app.post('/login', (req, res) => {
 })
 //#endregion
 
+//#region logout
+app.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+})
+
 //#region dashboard
 // check trạng thái login trước khi render
 app.get('/dashboard', (req, res) => {
   // get session
-
-  // if session available, render page, otherwise not
-  res.render('pages/dashboard-page');
+  if (req.session.User) {
+    // if session available, render page, otherwise not
+    res.render('pages/dashboard-page', {name: req.session.Name});
+  } else {
+    // else redirect to login page
+    res.redirect('/login');
+  }
 });
 //#endregion
 

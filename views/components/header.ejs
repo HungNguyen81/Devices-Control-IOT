@@ -1,6 +1,11 @@
 <div class="header">
     <img src="/images/logo.png" alt="logo" class="logo">
     <div class="header-title">SMART CONTROL SYSTEM</div>
+
+    <% if(name) { %>
+        <p>Xin chào <b><%- name -%></b></p>
+    <% } %>
+
     <% if(!isHideLoginBtn) { %>
         <% if(!isLoggin) { %>
             <a href="/login" class="btn btn-login">Đăng nhập</a>
