@@ -1,0 +1,37 @@
+.login{
+    width: 717px;
+    height: 450px;
+    border: 3px solid #86BAEC; 
+    border-radius: 24px;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px ;
+    margin-bottom: 50px;
+    text-align: center;
+    
+}
+.login .login-title{
+    color: #6C6C6C;
+    font-size: 41;
+    font-family: sans-serif;
+    margin-top: -4%;
+    width: 70%;
+    background-color: white;
+    margin-left: 15%;
+}
+.login .login-form{
+    display: block;
+    padding: 68.5px;
+    margin-bottom: 10%;
+}
+.login-form input{
+    width: 580px;
+    height: 60.8px;
+    border: 2px solid #86BAEC; 
+    border-radius: 10px;
+    margin-bottom: 30px;
+    font-size: 20;
+    padding-left: 20px;
+}

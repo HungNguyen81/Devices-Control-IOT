@@ -24,3 +24,12 @@
     right: 50px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+.btn-form-login{
+    color: #FFFFFF;
+    border-radius: 10px;
+    font-size: 29;
+    width: 548px;
+    height: 60.8px;
+    background-color: #FF681C;
+    line-height: 60.8px;
+    }
