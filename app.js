@@ -10,7 +10,7 @@ app.use(express.static(__dirname + '/publics'));
 
 // index page
 app.get('/', function(req, res) {
-  res.render('pages/index');
+  res.render('pages/landing-page');
 });
 
 app.listen(8080);

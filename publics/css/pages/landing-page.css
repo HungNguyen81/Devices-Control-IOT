@@ -1,3 +1,7 @@
+body{
+    overflow-x: hidden;
+}
+
 .cover{
     position: absolute;
     top: 0;

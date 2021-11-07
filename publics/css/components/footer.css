@@ -1,0 +1,35 @@
+.footer{
+    width: 100vw;
+    height: 200px;
+    position: absolute;
+    top: 100vh;
+    background-color: #547799;
+    display: flex;
+    align-items: center;
+}
+
+.footer .logo{
+    width: 30%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.footer .logo img{
+    height: 100px;
+    border-radius: 10px;
+}
+
+.footer-content{
+    width: 70%;
+    height: fit-content;
+    box-sizing: border-box;
+    color: #fff;
+    line-height: 30px;
+    font-size: 130%;
+}
+
+.footer-content h2{
+    margin-bottom: 10px;
+}
