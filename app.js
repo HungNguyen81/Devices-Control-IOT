@@ -2,27 +2,22 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const app = express();
+const SESSION_TIME = 30*24*3600*1000; // 30 ngày
 
 app.use(cors());
 app.use(express.json());
-// app.use(session({
-//   resave: true,
-//   saveUninitialized: true,
-//   secret: 'somesecret',
-//   cookie: 
-// }));
 app.use(session({
   secret: 'iot secret',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 60000 } //{ secure: true }
+  cookie: { maxAge: SESSION_TIME } //{ secure: true }
 }))
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/publics'));
 
-//#region Landing page
+//#region index page
 app.get('/', function (req, res) {
   if (req.session.User)
     res.render('pages/landing-page', { isLoggin: true, name: req.session.Name });
@@ -53,7 +48,6 @@ app.post('/login', (req, res) => {
     // else return error message
     res.status(400).json({ msg: 'Tên đăng nhập hoặc mật khẩu không chính xác.' });
   }
-
 })
 //#endregion
 
@@ -62,6 +56,7 @@ app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 })
+//#endregion
 
 //#region dashboard
 // check trạng thái login trước khi render
@@ -75,6 +70,12 @@ app.get('/dashboard', (req, res) => {
     res.redirect('/login');
   }
 });
+//#endregion
+
+//#region signup
+app.post('signup', (req, res)=>{
+  //TODO: thêm dữ liệu vào csdl, chỉ dùng cho admin
+})
 //#endregion
 
 app.listen(8080);
