@@ -7,7 +7,15 @@
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
         <link rel="stylesheet" href="/css/pages/topic-page.css">
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
         <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
+            integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO"
+            crossorigin="anonymous"></script>
+        <script>
+            const socket = io("http://localhost:8080/");
+        </script>
+        
 </head>
 
 <body>
@@ -22,7 +30,16 @@
                     <div class="chart-temp" id="temp"></div>
                     <div class="chart-humid" id="humid"></div>
                 </div>
-                <div class="current-data"></div>
+                <div class="current-data">
+                    <div class="temp-data">
+                        <i class="fas fa-thermometer-three-quarters"></i>
+                        Nhiệt độ: <span id="temp-data"></span> °C
+                    </div>
+                    <div class="humid-data">
+                        <i class="fas fa-tint"></i>
+                        Độ ẩm: <span id="humid-data"></span> %
+                    </div>
+                </div>
             </div>
 
             <div class="devices">

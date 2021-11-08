@@ -44,6 +44,33 @@
     height: 420px;
     /* background-color: brown; */
     border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    padding-top: 50px;
+    box-sizing: border-box;
+}
+
+.temp-data, .humid-data{
+    font-size: 130%;
+    font-weight: bold;
+    height: 20px;
+    padding: 20px 50px;
+    line-height: 40px;
+    white-space: nowrap;
+}
+
+.current-data i{
+    font-size: 150%;
+    line-height: 40px;
+    margin-right: 10px;
+}
+
+.temp-data {
+    color: #F84343;
+}
+.humid-data {
+    color: #00B2EB;
 }
 
 .charts .chart-temp {

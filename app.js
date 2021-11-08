@@ -1,8 +1,20 @@
 const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
+const mqtt = require('mqtt');
 const app = express();
 const SESSION_TIME = 30 * 24 * 3600 * 1000; // 30 ngày
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+var mqttOptions = {
+  host: '1af8e2f5e0ae40308432e82daf1071e0.s1.eu.hivemq.cloud',
+  port: 8883,
+  protocol: 'mqtts',
+  username: 'scs-home1',
+  password: 'SCS-home1'
+}
+var client;
 
 app.use(cors());
 app.use(express.json());
@@ -15,6 +27,9 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/publics'));
 
+// start server
+var PORT = process.env.PORT || 8080;
+server.listen(PORT, () => { console.log(`server is listening on port: ${PORT}`) });
 
 //index page
 app.get('/', function (req, res) {
@@ -36,7 +51,7 @@ app.get('/login', (req, res) => {
 });
 
 
-app.post('/login', (req, res) => {  
+app.post('/login', (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
 
@@ -71,12 +86,12 @@ app.get('/dashboard', (req, res) => {
       name: 'scs/home1',
       displayName: 'Biệt thự Đà Lạt',
       devices: [
-        {name: "Đèn phòng khách"},
-        {name: "Đèn phòng ngủ"},
-        {name: "Đèn phòng ăn"}
+        { name: "Đèn phòng khách" },
+        { name: "Đèn phòng ngủ" },
+        { name: "Đèn phòng ăn" }
       ]
     }]
-    
+
     res.render('pages/dashboard-page', { name: req.session.Name, topics: topics });
   } else {
     res.redirect('/login');
@@ -87,6 +102,10 @@ app.get('/dashboard', (req, res) => {
 app.get('/devices', (req, res) => {
   // check session
   if (req.session.User) {
+    client = mqtt.connect(mqttOptions);
+
+    setUpCallbacksMqtt(client);
+
     res.render('pages/topic-page', { name: req.session.Name });
   } else {
     res.redirect('/login');
@@ -100,5 +119,43 @@ app.post('signup', (req, res) => {
 })
 
 
-app.listen(8080);
-console.log('Server is listening on port 8080');
+
+function setUpCallbacksMqtt(client, socket) {
+  //setup the callbacks
+  client.on('connect', () => {
+    console.log('mqtt Connected');
+  });
+
+  client.on('error', error => {
+    console.log(error);
+    client.end();
+  });
+
+  client.on('close', () => {
+    console.log('close');
+  })
+}
+
+
+// setup socket.io
+io.on('connection', socket => {
+  console.log('new connection with ID:', socket.id);
+  socket.on('disconnect', () => { console.log('socket', socket.id, 'disconnected'); })
+
+  try {
+    client.subscribe('scs/home1');
+
+    client.on('message', (topic, message) => {
+      //Called each time a message is received
+      console.log('Received message:', topic, message.toString());
+
+      let arr = message.toString().split(' ');
+      let keywork = arr[0];
+      let value = arr[1];
+
+      socket.emit(keywork, [new Date().toISOString(), value])
+    });
+  } catch (e) {
+    console.log('MQTT Client connection fail');
+  }
+})

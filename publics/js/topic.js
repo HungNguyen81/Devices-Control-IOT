@@ -1,44 +1,58 @@
 let tempChart, humidChart;
-/**
-* Request data from the server, add it to the graph and set a timeout to request again
-*/
-async function requestData() {
-    const result = await fetch('https://demo-live-data.highcharts.com/time-rows.json'); //["2021-11-07T13:40:19.156Z",1.2404696998244558]
-    if (result.ok) {
-        const data = await result.json();
-        const [date, value] = data[0];
-        const point = [new Date(date).getTime(), value * 10];
-        const series1 = tempChart.series[0],
-            series2 = humidChart.series[0],
-            shift1 = series1.data.length > 20, // shift if the series is longer than 20
-            shift2 = series2.data.length > 20;
+
+function getTempDataFromSocket() {
+    socket.on('temp', temp => {
+        let [date, value] = temp;
+        let point = [new Date(date).getTime(), Number(value)];
+        let series = tempChart.series[0],
+            shift = series.data.length > 20; // shift if the series is longer than 20
+
         // add the point
-        tempChart.series[0].addPoint(point, true, shift1);
-        humidChart.series[0].addPoint(point, true, shift2);
-        // call it again after one second
-        setTimeout(requestData, 1000);
-    }
+        tempChart.series[0].addPoint(point, true, shift);
+        document.querySelector('#temp-data').innerText = Math.round(value * 100) / 100;
+    });
+}
+
+function getHumidDataFromSocket() {
+    socket.on('humid', humid => {
+        console.log(humid);
+        let [date, value] = humid;
+        let point = [new Date(date).getTime(), Number(value)];
+        let series = humidChart.series[0],
+            shift = series.data.length > 20; // shift if the series is longer than 20
+
+        // add the point
+        humidChart.series[0].addPoint(point, true, shift);
+        document.querySelector('#humid-data').innerText = Math.round(value * 100) / 100;
+    });
 }
 
 window.addEventListener('load', function () {
+    Highcharts.setOptions({
+        time: {
+            useUTC: false
+        }
+    });
+
     tempChart = new Highcharts.Chart({
         chart: {
             renderTo: 'temp',
             defaultSeriesType: 'line',
             // line, spline, line, spline, area, areaspline, column, bar, pie, scatter, gauge, arearange, areasplinerange and columnrange
             events: {
-                load: requestData
+                load: getTempDataFromSocket
             }
         },
         title: null,
         xAxis: {
             type: 'datetime',
-            tickPixelInterval: 150,
-            maxZoom: 20 * 1000
+            labels: {
+                enabled: true,
+                format: '{value:%H:%M:%S}',
+            },
         },
         yAxis: {
-            minPadding: 0.2,
-            maxPadding: 0.2,
+            type: 'linear',
             title: {
                 text: '°C',
                 margin: 10
@@ -56,18 +70,19 @@ window.addEventListener('load', function () {
             defaultSeriesType: 'areaspline',
             // line, spline, line, spline, area, areaspline, column, bar, pie, scatter, gauge, arearange, areasplinerange and columnrange
             events: {
-                load: requestData
+                load: getHumidDataFromSocket
             }
         },
         title: null,
         xAxis: {
             type: 'datetime',
-            tickPixelInterval: 150,
-            maxZoom: 20 * 1000
+            labels: {
+                enabled: true,
+                format: '{value:%H:%M:%S}',
+            },
         },
         yAxis: {
-            minPadding: 0.2,
-            maxPadding: 0.2,
+            type: 'linear',
             title: {
                 text: '%',
                 margin: 10

@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="./css/components/header.css">
     <link rel="stylesheet" href="./css/components/footer.css">
     <link rel="stylesheet" href="./css/pages/topic-page.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
 
@@ -33,7 +34,16 @@
                 <div class="chart-temp" id="temp"></div>
                 <div class="chart-humid" id="humid"></div>
             </div>
-            <div class="current-data"></div>
+            <div class="current-data">
+                <div class="temp-data">
+                    <i class="fas fa-thermometer-three-quarters"></i>
+                    Nhiệt độ: <span id="humid">27.08</span> °C
+                </div>
+                <div class="humid-data">
+                    <i class="fas fa-tint"></i>
+                    Độ ẩm: <span id="humid">80.99</span> %
+                </div>
+            </div>
         </div>
 
         <div class="devices">
