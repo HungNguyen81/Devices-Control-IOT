@@ -31,8 +31,8 @@ client.on('message', (topic, message) => {
 var temp = 0, humid = 0;
 
 function sendData() {
-    temp = Math.random() * (37 - 10) + 10;
-    humid = Math.random() * (99 - 50) + 50;
+    temp = Math.random() * (27 - 26) + 26;
+    humid = Math.random() * (99 - 89) + 89;
 
     client.publish('scs/home1', `temp ${temp}`)
     client.publish('scs/home1', `humid ${humid}`)

@@ -1,6 +1,5 @@
 .topics-container {
     width: calc(100% - 300px);
-    /* border: 1px solid red; */
     margin: auto;
     margin-bottom: 50px;
     display: flex;
@@ -24,7 +23,6 @@
 .temp-humid {
     width: calc(100% - 200px);
     height: fit-content;
-    /* border: 1px solid red; */
     margin-bottom: 30px;
     display: flex;
     justify-content: space-between;
@@ -33,7 +31,6 @@
 .charts {
     width: calc(65% - 20px);
     height: 420px;
-    /* background-color: blueviolet; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -42,13 +39,11 @@
 .current-data {
     width: 35%;
     height: 420px;
-    /* background-color: brown; */
-    border: 1px solid black;
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
     padding-top: 50px;
     box-sizing: border-box;
+    box-shadow: 2px 2px 5px #888888;
 }
 
 .temp-data, .humid-data{
@@ -76,15 +71,17 @@
 .charts .chart-temp {
     width: 100%;
     height: 200px;
-    /* background-color: chocolate; */
-    border: 1px solid red;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow: 2px 2px 5px #888888;
 }
 
 .charts .chart-humid {
     width: 100%;
     height: 200px;
-    /* background-color:coral; */
-    border: 1px solid red;
+    padding: 10px;
+    box-sizing: border-box;
+    box-shadow: 2px 2px 5px #888888;
 }
 
 /* devices */
@@ -93,7 +90,6 @@
     width: calc(100% - 200px);
     height: fit-content;
     padding: 20px 0;
-    /* border: 1px solid red; */
 }
 
 .devices>* {
@@ -114,7 +110,7 @@
 }
 
 .device.active .status {
-    background-color: #4EFF55;
+    background-color: #24b829;
 }
 
 
@@ -174,11 +170,11 @@
 }
 
 input:checked+.slider {
-    background-color: #4EFF55;
+    background-color: #24b829;
 }
 
 input:focus+.slider {
-    box-shadow: 0 0 1px #4EFF55;
+    box-shadow: 0 0 1px #24b829;
 }
 
 input:checked+.slider:before {

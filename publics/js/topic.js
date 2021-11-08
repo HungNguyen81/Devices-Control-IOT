@@ -60,7 +60,8 @@ window.addEventListener('load', function () {
         },
         series: [{
             name: 'Nhiệt độ',
-            data: []
+            data: [],
+            color: '#F84343'
         }]
     });
 
@@ -90,7 +91,8 @@ window.addEventListener('load', function () {
         },
         series: [{
             name: 'Độ ẩm',
-            data: []
+            data: [],
+            color: '#00B2EB'
         }]
     });
 });
