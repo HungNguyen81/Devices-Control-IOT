@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const app = express();
-const SESSION_TIME = 30*24*3600*1000; // 30 ngày
+const SESSION_TIME = 30 * 24 * 3600 * 1000; // 30 ngày
 
 app.use(cors());
 app.use(express.json());
@@ -12,28 +12,31 @@ app.use(session({
   saveUninitialized: true,
   cookie: { maxAge: SESSION_TIME } //{ secure: true }
 }))
-
-// set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/publics'));
 
-//#region index page
+
+//index page
 app.get('/', function (req, res) {
   if (req.session.User)
     res.render('pages/landing-page', { isLoggin: true, name: req.session.Name });
   else
     res.render('pages/landing-page', { isLoggin: false, name: null });
 });
-//#endregion
 
-//#region login
+
+//login
 app.get('/login', (req, res) => {
-  res.render('pages/login-page');
+  // check session
+  if (req.session.User) {
+    res.redirect('/');
+  } else {
+    res.render('pages/login-page');
+  }
 });
 
-// check form login
-app.post('/login', (req, res) => {
-  console.log("body", req.body);
+
+app.post('/login', (req, res) => {  
   var email = req.body.email;
   var password = req.body.password;
 
@@ -45,38 +48,57 @@ app.post('/login', (req, res) => {
     res.status(200).end();
 
   } else {
-    // else return error message
     res.status(400).json({ msg: 'Tên đăng nhập hoặc mật khẩu không chính xác.' });
   }
 })
-//#endregion
 
-//#region logout
+
+//logout
 app.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
 })
-//#endregion
 
-//#region dashboard
-// check trạng thái login trước khi render
+
+//dashboard
 app.get('/dashboard', (req, res) => {
-  // get session
+  // check session
   if (req.session.User) {
-    // if session available, render page, otherwise not
-    res.render('pages/dashboard-page', {name: req.session.Name});
+    let topics = null; //TODO: truy cập DB lấy ra trường topics: [ ... ]
+
+    //dữ liệu giả sử
+    topics = [{
+      name: 'scs/home1',
+      displayName: 'Biệt thự Đà Lạt',
+      devices: [
+        {name: "Đèn phòng khách"},
+        {name: "Đèn phòng ngủ"},
+        {name: "Đèn phòng ăn"}
+      ]
+    }]
+    
+    res.render('pages/dashboard-page', { name: req.session.Name, topics: topics });
   } else {
-    // else redirect to login page
     res.redirect('/login');
   }
 });
-//#endregion
 
-//#region signup
-app.post('signup', (req, res)=>{
+
+app.get('/devices', (req, res) => {
+  // check session
+  if (req.session.User) {
+    res.render('pages/topic-page', { name: req.session.Name });
+  } else {
+    res.redirect('/login');
+  }
+})
+
+
+//sign up
+app.post('signup', (req, res) => {
   //TODO: thêm dữ liệu vào csdl, chỉ dùng cho admin
 })
-//#endregion
+
 
 app.listen(8080);
 console.log('Server is listening on port 8080');

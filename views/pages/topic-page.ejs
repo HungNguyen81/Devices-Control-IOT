@@ -1,15 +1,72 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <%- include('../partials/head'); -%>
+
+<head>
+    <%- include('../partials/head'); -%>
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
-        <!-- links -->
-    </head>
-    <body>
-        <%- include('../components/header') -%>
-        <!-- content -->
+        <link rel="stylesheet" href="/css/pages/topic-page.css">
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+
+<body>
+    <%- include('../components/header', {isHideLoginBtn: false, isLoggin: true, name: name}) -%>
+        <div class="topics-container">
+            <!-- content -->
+
+            <h2>Biệt thự Đà Lạt</h2>
+
+            <div class="temp-humid">
+                <div class="charts">
+                    <div class="chart-temp" id="temp"></div>
+                    <div class="chart-humid" id="humid"></div>
+                </div>
+                <div class="current-data"></div>
+            </div>
+
+            <div class="devices">
+                <div class="device active">
+                    <div class="status"></div>
+                    <div class="device-name">Đèn phòng khách</div>
+                    <div class="status-text">ON</div>
+                    <label class="switch">
+                        <input type="checkbox" checked onclick="toggleStatus(this)">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="device">
+                    <div class="status"></div>
+                    <div class="device-name">Đèn phòng ngủ</div>
+                    <div class="status-text">OFF</div>
+                    <label class="switch">
+                        <input type="checkbox" onclick="toggleStatus(this)">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="device active">
+                    <div class="status"></div>
+                    <div class="device-name">Đèn phòng ăn</div>
+                    <div class="status-text">ON</div>
+                    <label class="switch">
+                        <input type="checkbox" checked onclick="toggleStatus(this)">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="device">
+                    <div class="status"></div>
+                    <div class="device-name">Đèn phòng tắm</div>
+                    <div class="status-text">OFF</div>
+                    <label class="switch">
+                        <input type="checkbox" onclick="toggleStatus(this)">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
         <%- include('../components/footer') -%>
-    </body>
+            <script src="/js/topic.js"></script>
+</body>
+
 </html>

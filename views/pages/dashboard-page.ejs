@@ -5,11 +5,15 @@
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
-        <!-- links -->
+        <link rel="stylesheet" href="/css/pages/dashboard-page.css">
     </head>
     <body>
         <%- include('../components/header', {isHideLoginBtn: false, isLoggin: true, name: name}) -%>
+        
         <!-- content -->
+        <% for(let topic of topics) { %>
+            <p> <%- topic.displayName -%> </p>
+        <% } %>
 
         <%- include('../components/footer') -%>
     </body>

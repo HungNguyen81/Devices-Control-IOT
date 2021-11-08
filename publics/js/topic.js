@@ -81,7 +81,7 @@ window.addEventListener('load', function () {
 });
 
 
-function checkStatus(checkbox) {
+function toggleStatus(checkbox) {
     let device = checkbox.parentNode.parentNode;
     let statusText = device.children[2];
 
