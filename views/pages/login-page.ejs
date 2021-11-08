@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <%- include('../partials/head'); -%>
+        <%- include('../partials/head', {title: 'SCS - Login'}); -%>
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
@@ -16,11 +16,11 @@
             <form class="login-form">
                 <h2>SMART CONTROL</h2>
                 <div class="form-input email">
-                    <input type="text" id="email" tabindex="1" onblur="checkRequired('email', 'email')">
+                    <input type="text" id="email" tabindex="1" value="hung" onblur="checkRequired('email', 'email')">
                     <div class="lbl urs-label">Email</div>
                 </div>
                 <div class="form-input password">
-                    <input type="password" id="password" tabindex="2" onblur="checkRequired('password', 'mật khẩu')">
+                    <input type="password" id="password" tabindex="2" value="123" onblur="checkRequired('password', 'mật khẩu')">
                     <div class="lbl urs-label">Mật khẩu</div>
                 </div>
                 <p class="err-msg"></p>

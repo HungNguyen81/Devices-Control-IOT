@@ -1,20 +1,50 @@
-<!DOCTYPE html>
+
 <html>
-    <head>
-        <%- include('../partials/head'); -%>
+
+<head>
+    <%- include('../partials/head', {title: 'SCS - Dashboard'}); -%>
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
         <link rel="stylesheet" href="/css/pages/dashboard-page.css">
-    </head>
-    <body>
-        <%- include('../components/header', {isHideLoginBtn: false, isLoggin: true, name: name}) -%>
-        
+        <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
+            integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO"
+            crossorigin="anonymous"></script>
+        <script>
+            const socket = io("http://localhost:8080/");
+        </script>
+</head>
+
+<body>
+    <%- include('../components/header', {isHideLoginBtn: false, isLoggin: true, name: name}) -%>
+
         <!-- content -->
         <% for(let topic of topics) { %>
-            <p> <%- topic.displayName -%> </p>
+        <p>
+            <a href="/devices?t=<%= topic.name %>"><%- topic.displayName -%> :</a>
+             <span id="<%= topic.name %>/temp"></span> - <span id="<%= topic.name %>/humid"></span>
+        </p>
         <% } %>
 
         <%- include('../components/footer') -%>
-    </body>
+
+        <script>
+            function getDataFromSocket() {
+
+                '<% for(let t of topics) { %>'
+                    console.log('<%= t.name %>'); 
+                    socket.on('<%= t.name %>/temp', data => {
+                        let [date, value] = data;
+                        document.getElementById('<%= t.name %>/temp').innerText = Math.round(value * 100) / 100;
+                    });
+                    socket.on('<%= t.name %>/humid', data => {
+                        let [date, value] = data;
+                        document.getElementById('<%= t.name %>/humid').innerText = Math.round(value * 100) / 100;
+                    });
+                '<% } %>'
+            }
+            window.onload = getDataFromSocket;
+        </script>
+</body>
+
 </html>

@@ -43,7 +43,8 @@
     flex-direction: column;
     padding-top: 50px;
     box-sizing: border-box;
-    box-shadow: 2px 2px 5px #888888;
+    box-shadow: 4px 4px 10px #888888;
+    border-radius: 10px;
 }
 
 .temp-data, .humid-data{
@@ -73,7 +74,8 @@
     height: 200px;
     padding: 10px;
     box-sizing: border-box;
-    box-shadow: 2px 2px 5px #888888;
+    box-shadow: 4px 4px 10px #888888;
+    border-radius: 10px;
 }
 
 .charts .chart-humid {
@@ -81,7 +83,8 @@
     height: 200px;
     padding: 10px;
     box-sizing: border-box;
-    box-shadow: 2px 2px 5px #888888;
+    box-shadow: 4px 4px 10px #888888;
+    border-radius: 10px;
 }
 
 /* devices */

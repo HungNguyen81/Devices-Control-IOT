@@ -60,6 +60,34 @@ app.post('/login', (req, res) => {
     req.session.User = req.body.email;
     req.session.Name = 'Hung Nguyen Ngoc';    //TODO: đoạn này vào csdl tìm kiếm name của object có email của client
 
+    // connect to mqtt broker
+    client = mqtt.connect(mqttOptions);
+    setUpCallbacksMqtt(client);
+
+    // setup socket.io
+    io.on('connection', socket => {
+      console.log('new connection with ID:', socket.id);
+      socket.on('disconnect', () => { console.log('socket', socket.id, 'disconnected'); })
+
+      try {
+        //   client.subscribe('scs/home1');
+
+        client.on('message', (topic, message) => {
+          //Called each time a message is received
+          // console.log('Received message:', topic, message.toString());
+
+          let arr = message.toString().split(' ');
+          let keywork = arr[0];
+          let value = arr[1];
+
+          socket.emit(`${topic}/${keywork}`, [new Date().toISOString(), value]);
+          // console.log('emit:', keywork, [new Date().toISOString(), value]);
+        });
+      } catch (e) {
+        console.log('MQTT Client connection failed');
+      }
+    })
+
     res.status(200).end();
 
   } else {
@@ -77,20 +105,17 @@ app.get('/logout', (req, res) => {
 
 //dashboard
 app.get('/dashboard', (req, res) => {
+  console.log('log');
   // check session
   if (req.session.User) {
-    let topics = null; //TODO: truy cập DB lấy ra trường topics: [ ... ]
+    let topics = getTopics();
+    // client.end();
+    // client = mqtt.connect(mqttOptions);
 
-    //dữ liệu giả sử
-    topics = [{
-      name: 'scs/home1',
-      displayName: 'Biệt thự Đà Lạt',
-      devices: [
-        { name: "Đèn phòng khách" },
-        { name: "Đèn phòng ngủ" },
-        { name: "Đèn phòng ăn" }
-      ]
-    }]
+    for (let topic of topics) {
+      client.subscribe(topic.name);
+      console.log("sub", topic.name);
+    }
 
     res.render('pages/dashboard-page', { name: req.session.Name, topics: topics });
   } else {
@@ -98,14 +123,19 @@ app.get('/dashboard', (req, res) => {
   }
 });
 
-
+// GET /devices?t=scs/home1
 app.get('/devices', (req, res) => {
+  let topic = req.query.t;
+
+  // let topics = getTopics();
+
+  // for (let topic of topics) {
+  //   client.unsubscribe(topic.name);
+  // }
+  client.subscribe(topic)
+
   // check session
   if (req.session.User) {
-    client = mqtt.connect(mqttOptions);
-
-    setUpCallbacksMqtt(client);
-
     res.render('pages/topic-page', { name: req.session.Name });
   } else {
     res.redirect('/login');
@@ -118,17 +148,43 @@ app.post('signup', (req, res) => {
   //TODO: thêm dữ liệu vào csdl, chỉ dùng cho admin
 })
 
+function getTopics() {
+  let topics = null; //TODO: truy cập DB lấy ra trường topics: [ ... ]
 
+  //dữ liệu giả sử
+  topics = [
+    {
+      name: 'scs/home1',
+      displayName: 'Biệt thự Đà Lạt',
+      devices: [
+        { name: "Đèn phòng khách" },
+        { name: "Đèn phòng ngủ" },
+        { name: "Đèn phòng ăn" }
+      ]
+    },
+    {
+      name: 'scs/home2',
+      displayName: 'Biệt thự Hà Nội',
+      devices: [
+        { name: "Đèn phòng khách" },
+        { name: "Đèn phòng ngủ" },
+        { name: "Đèn phòng ăn" },
+        { name: "Đèn phòng tắm" }
+      ]
+    }]
+
+  return topics;
+}
 
 function setUpCallbacksMqtt(client, socket) {
   //setup the callbacks
   client.on('connect', () => {
-    console.log('mqtt Connected');
+    console.log('MQTT Connected');
   });
 
   client.on('error', error => {
     console.log(error);
-    client.end();
+    // client.end();
   });
 
   client.on('close', () => {
@@ -137,25 +193,25 @@ function setUpCallbacksMqtt(client, socket) {
 }
 
 
-// setup socket.io
-io.on('connection', socket => {
-  console.log('new connection with ID:', socket.id);
-  socket.on('disconnect', () => { console.log('socket', socket.id, 'disconnected'); })
+// // setup socket.io
+// io.on('connection', socket => {
+//   console.log('new connection with ID:', socket.id);
+//   socket.on('disconnect', () => { console.log('socket', socket.id, 'disconnected'); })
 
-  try {
-    client.subscribe('scs/home1');
+//   try {
+//   //   client.subscribe('scs/home1');
 
-    client.on('message', (topic, message) => {
-      //Called each time a message is received
-      console.log('Received message:', topic, message.toString());
+//   client.on('message', (topic, message) => {
+//     //Called each time a message is received
+//     console.log('Received message:', topic, message.toString());
 
-      let arr = message.toString().split(' ');
-      let keywork = arr[0];
-      let value = arr[1];
+//     let arr = message.toString().split(' ');
+//     let keywork = arr[0];
+//     let value = arr[1];
 
-      socket.emit(keywork, [new Date().toISOString(), value])
-    });
-  } catch (e) {
-    console.log('MQTT Client connection fail');
-  }
-})
+//     socket.emit(keywork, [new Date().toISOString(), value])
+//   });
+//   } catch (e) {
+//     console.log('MQTT Client connection failed');
+//   }
+// })
