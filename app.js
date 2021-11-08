@@ -182,7 +182,7 @@ function getTopics() {
   return topics;
 }
 
-function setUpCallbacksMqtt(client, socket) {
+function setUpCallbacksMqtt(client) {
   //setup the callbacks
   client.on('connect', () => {
     console.log('MQTT Connected');
@@ -197,27 +197,3 @@ function setUpCallbacksMqtt(client, socket) {
     console.log('close');
   })
 }
-
-
-// // setup socket.io
-// io.on('connection', socket => {
-//   console.log('new connection with ID:', socket.id);
-//   socket.on('disconnect', () => { console.log('socket', socket.id, 'disconnected'); })
-
-//   try {
-//   //   client.subscribe('scs/home1');
-
-//   client.on('message', (topic, message) => {
-//     //Called each time a message is received
-//     console.log('Received message:', topic, message.toString());
-
-//     let arr = message.toString().split(' ');
-//     let keywork = arr[0];
-//     let value = arr[1];
-
-//     socket.emit(keywork, [new Date().toISOString(), value])
-//   });
-//   } catch (e) {
-//     console.log('MQTT Client connection failed');
-//   }
-// })
