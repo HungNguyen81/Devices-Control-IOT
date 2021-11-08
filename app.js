@@ -125,18 +125,24 @@ app.get('/dashboard', (req, res) => {
 
 // GET /devices?t=scs/home1
 app.get('/devices', (req, res) => {
-  let topic = req.query.t;
-
-  // let topics = getTopics();
-
-  // for (let topic of topics) {
-  //   client.unsubscribe(topic.name);
-  // }
-  client.subscribe(topic)
-
   // check session
   if (req.session.User) {
-    res.render('pages/topic-page', { name: req.session.Name });
+    let topic = req.query.t;
+
+    let topics = getTopics(), displayName;
+
+    // for (let topic of topics) {
+    //   client.unsubscribe(topic.name);
+    // }
+    client.subscribe(topic)
+
+    topics.forEach(t => {
+      if(t.name == topic){
+        displayName = t.displayName;
+      }
+    });
+
+    res.render('pages/topic-page', { name: req.session.Name, displayName: displayName });
   } else {
     res.redirect('/login');
   }
