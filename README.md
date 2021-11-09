@@ -1,4 +1,4 @@
-# Devices-Control-IOT
+# Điều khiển thiết bị và giám sát nhiệt độ, độ ẩm qua internet
 
 - B1: clone project
 - B2: mở project trên VS Code, hoặc editor bất kì
