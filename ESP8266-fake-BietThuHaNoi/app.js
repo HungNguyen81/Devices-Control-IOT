@@ -31,11 +31,11 @@ client.on('message', (topic, message) => {
 var temp = 0, humid = 0;
 
 function sendData() {
-    temp = Math.random() * (11 - 10) + 10;
+    temp = Math.random() * (20 - 20.5) + 20.5;
     humid = Math.random() * (50 - 49) + 49;
 
-    client.publish('scs/home2', `temp ${temp}`)
-    client.publish('scs/home2', `humid ${humid}`)
+    client.publish('scs/home2/data', `temp ${temp}`)
+    client.publish('scs/home2/data', `humid ${humid}`)
 
     setTimeout(sendData, 2000);
 }

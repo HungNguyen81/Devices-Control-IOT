@@ -12,12 +12,12 @@ function getParameterByName(name, url = window.location.href) {
 
 
 let topic = getParameterByName('t');
-$(window).on('popstate', function(event) {
+$(window).on('popstate', function (event) {
     alert("pop");
-   });
+});
 
 function getTempDataFromSocket() {
-    socket.on(`${topic}/temp`, data => {
+    socket.on(`${topic}/data/temp`, data => {
         let [date, value] = data;
         let point = [new Date(date).getTime(), Number(value)];
         let series = tempChart.series[0],
@@ -30,7 +30,7 @@ function getTempDataFromSocket() {
 }
 
 function getHumidDataFromSocket() {
-    socket.on(`${topic}/humid`, data => {
+    socket.on(`${topic}/data/humid`, data => {
         let [date, value] = data;
         let point = [new Date(date).getTime(), Number(value)];
         let series = humidChart.series[0],
@@ -99,6 +99,7 @@ window.addEventListener('load', function () {
         },
         yAxis: {
             type: 'linear',
+            max: 100,
             title: {
                 text: '%',
                 margin: 10
@@ -124,4 +125,27 @@ function toggleStatus(checkbox) {
     } else {
         statusText.innerText = 'OFF';
     }
+
+    // POST /devices
+    // |-body: 
+    /*  {
+            topic: topic,
+            deviceid: device.getAttribute('deviceid')
+        }
+    */
+    var settings = {
+        "url": '/devices',
+        "method": 'POST',
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+            topic: topic,
+            deviceid: device.getAttribute('deviceid')
+        })
+    };
+
+    $.ajax(settings).done(response => {
+        console.log(response);
+    });
 }

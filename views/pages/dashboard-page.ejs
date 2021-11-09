@@ -1,12 +1,14 @@
-
 <html>
 
 <head>
-    <%- include('../partials/head', {title: 'SCS - Dashboard'}); -%>
+    <%- include('../partials/head', {title: 'SCS - Dashboard' }); -%>
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
         <link rel="stylesheet" href="/css/pages/dashboard-page.css">
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+            integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+            crossorigin="anonymous" />
         <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
             integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO"
             crossorigin="anonymous"></script>
@@ -19,32 +21,74 @@
     <%- include('../components/header', {isHideLoginBtn: false, isLoggin: true, name: name}) -%>
 
         <!-- content -->
-        <% for(let topic of topics) { %>
-        <p>
-            <a href="/devices?t=<%= topic.name %>"><%- topic.displayName -%> :</a>
-             <span id="<%= topic.name %>/temp"></span> - <span id="<%= topic.name %>/humid"></span>
-        </p>
-        <% } %>
-
+        <div class="topics-container">
+            <h2>DASHBOARD</h2>
+            <div class="topics">
+                <% for(let topic of topics) { %>
+                    <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>">
+                        <div class="stt"></div>
+                        <div class="name">
+                            <%- topic.displayName -%>
+                        </div>
+                        <div class="data">
+                            <div class="temp">
+                                <i class="fas fa-thermometer-three-quarters"></i><span
+                                    id="<%= topic.name %>/data/temp">--.--</span> °C
+                            </div>
+                            <div class="humid">
+                                <i class="fas fa-tint"></i><span id="<%= topic.name %>/data/humid">--.--</span> %
+                            </div>
+                        </div>
+                    </a>
+                    <% } %>
+            </div>
+        </div>
         <%- include('../components/footer') -%>
 
-        <script>
-            function getDataFromSocket() {
+            <script>
+                var mapTimeout = new Map();
 
-                '<% for(let t of topics) { %>'
-                    console.log('<%= t.name %>'); 
-                    socket.on('<%= t.name %>/temp', data => {
+                function getDataFromSocket() {
+                    '<% for(let [i,t] of topics.entries()) { %>'
+                    console.log('<%= t.name %>');
+                    
+                    socket.on('<%= t.name %>/data/temp', data => {
                         let [date, value] = data;
-                        document.getElementById('<%= t.name %>/temp').innerText = Math.round(value * 100) / 100;
+                        let temp = document.getElementById('<%= t.name %>/data/temp');
+
+                        temp.innerText = Math.round(value * 100) / 100;                        
                     });
-                    socket.on('<%= t.name %>/humid', data => {
+                    socket.on('<%= t.name %>/data/humid', data => {
                         let [date, value] = data;
-                        document.getElementById('<%= t.name %>/humid').innerText = Math.round(value * 100) / 100;
+                        let humid = document.getElementById('<%= t.name %>/data/humid');
+
+                        humid.innerText = Math.round(value * 100) / 100;
+                        // if(stt.style.backgroundColor == '#FFB13C'){
+                            setStatus('<%= t.name %>');
+                        // }
                     });
-                '<% } %>'
-            }
-            window.onload = getDataFromSocket;
-        </script>
+                    '<% } %>'
+                }
+
+                function setStatus(id) {
+                    clearTimeout(mapTimeout.get(id));
+
+                    let stt = document.getElementById(id).children[0];
+                    stt.style.backgroundColor = '#166cbd';
+
+                    let tmp =setTimeout(() => {
+                        resetStatus(stt);
+                        document.getElementById(`${id}/data/temp`).innerText = '--.--';
+                        document.getElementById(`${id}/data/humid`).innerText = '--.--';
+                    }, 5000);
+                    mapTimeout.set(id,tmp);
+                }
+                function resetStatus(stt) {
+                    stt.style.backgroundColor = '#FFB13C'
+                }
+
+                window.onload = getDataFromSocket;
+            </script>
 </body>
 
 </html>

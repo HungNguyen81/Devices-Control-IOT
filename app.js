@@ -11,8 +11,8 @@ var mqttOptions = {
   host: '1af8e2f5e0ae40308432e82daf1071e0.s1.eu.hivemq.cloud',
   port: 8883,
   protocol: 'mqtts',
-  username: 'scs-home1',
-  password: 'SCS-home1'
+  username: '',
+  password: ''
 }
 var client;
 
@@ -59,6 +59,9 @@ app.post('/login', (req, res) => {
     // set session
     req.session.User = req.body.email;
     req.session.Name = 'Hung Nguyen Ngoc';    //TODO: đoạn này vào csdl tìm kiếm name của object có email của client
+
+    mqttOptions.username = 'scs-home1';       //TODO: lấy tên đăng nhập và mk kết nối hiveMQ từ object đã lấy từ csdl
+    mqttOptions.password = 'SCS-home1';
 
     // connect to mqtt broker
     client = mqtt.connect(mqttOptions);
@@ -113,8 +116,9 @@ app.get('/dashboard', (req, res) => {
     // client = mqtt.connect(mqttOptions);
 
     for (let topic of topics) {
-      client.subscribe(topic.name);
-      console.log("sub", topic.name);
+      client.subscribe(`${topic.name}/data`);
+      // client.subscribe(`${topic.name}/ctrl`);
+      console.log("sub", topic.name,'/data');
     }
 
     res.render('pages/dashboard-page', { name: req.session.Name, topics: topics });
@@ -129,23 +133,37 @@ app.get('/devices', (req, res) => {
   if (req.session.User) {
     let topic = req.query.t;
 
-    let topics = getTopics(), displayName;
+    let topics = getTopics(), displayName, devices;
 
     // for (let topic of topics) {
     //   client.unsubscribe(topic.name);
     // }
-    client.subscribe(topic)
+    client.subscribe(`${topic}/data`)
+    // client.subscribe(`${topic}/ctrl`);
 
     topics.forEach(t => {
       if(t.name == topic){
         displayName = t.displayName;
+        devices = t.devices;
       }
     });
 
-    res.render('pages/topic-page', { name: req.session.Name, displayName: displayName });
+    res.render('pages/topic-page', 
+    { 
+      name: req.session.Name, 
+      displayName: displayName, 
+      devices: devices 
+    });
+
   } else {
     res.redirect('/login');
   }
+})
+
+
+app.post('/devices', (req, res) => {
+  //TODO: update data trong database
+  
 })
 
 
@@ -163,19 +181,18 @@ function getTopics() {
       name: 'scs/home1',
       displayName: 'Biệt thự Đà Lạt',
       devices: [
-        { name: "Đèn phòng khách" },
-        { name: "Đèn phòng ngủ" },
-        { name: "Đèn phòng ăn" }
+        { id: 1, name: "Đèn phòng khách", status: 'on' },
+        { id: 2, name: "Đèn phòng ngủ", status: 'off' },
+        { id: 3, name: "Đèn phòng ăn", status: 'off' }
       ]
     },
     {
       name: 'scs/home2',
       displayName: 'Biệt thự Hà Nội',
       devices: [
-        { name: "Đèn phòng khách" },
-        { name: "Đèn phòng ngủ" },
-        { name: "Đèn phòng ăn" },
-        { name: "Đèn phòng tắm" }
+        { id: 1, name: "Đèn phòng khách", status: 'on' },
+        { id: 2, name: "Đèn phòng ngủ", status: 'off' },
+        { id: 3, name: "Đèn phòng ăn", status: 'on' }
       ]
     }]
 
