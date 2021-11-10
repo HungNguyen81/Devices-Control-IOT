@@ -36,7 +36,7 @@
     padding-left: 20px;
 } */
 
-.login-form-container{
+.login-form-container {
     width: 100%;
     height: fit-content;
     display: flex;
@@ -45,7 +45,7 @@
     padding: 180px 0;
 }
 
-.login-form{
+.login-form {
     width: 600px;
     height: 370px;
     border: 3px solid #86BAEC;
@@ -57,7 +57,7 @@
     box-sizing: border-box;
 }
 
-.login-form h2{
+.login-form h2 {
     padding: 0 20px;
     background-color: #fff;
     transform: translate(0, -18px);
@@ -65,17 +65,18 @@
     color: #6C6C6C;
 }
 
-.login-form .form-input{
+.login-form .form-input {
     width: 100%;
     height: 50px;
     margin-top: 50px;
     box-sizing: border-box;
 }
-.email{
+
+.email {
     margin-top: 30px !important;
 }
 
-.login-form .form-input .lbl{
+.login-form .form-input .lbl {
     position: absolute;
     transform: translate(16px, -60px);
     background-color: #fff;
@@ -86,7 +87,7 @@
     user-select: none;
 }
 
-.login-form .form-input input{
+.login-form .form-input input {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
@@ -96,20 +97,22 @@
     border: 3px solid #86BAEC;
     font-size: 18px;
 }
-.form-input input:focus{
+
+.form-input input:focus {
     border: 3px solid #3B72A7;
 }
-.form-input input:focus ~ .lbl{
+
+.form-input input:focus~.lbl {
     color: #3B72A7;
 }
 
-.err-msg{
+.err-msg {
     color: red;
     margin: 16px 0;
     height: 16px;
 }
 
-.login-form .btn-form-submit{
+.login-form .btn-form-submit {
     position: relative;
     background-color: #FF681C;
     color: #fff;
@@ -120,4 +123,21 @@
     line-height: 50px;
     outline: none;
     border: none;
+}
+
+@media only screen and (max-width: 900px) {
+    .login-form {
+        width: calc(100% - 40px);
+        transform: translate(0, 28px);
+    }
+    .login-form .btn-form-submit {
+        font-size: 19px;
+    }
+    .login-form-container {
+        padding: 0;
+        height: 100vh;
+    }
+    .header .header-title{
+        visibility: visible;
+    }
 }

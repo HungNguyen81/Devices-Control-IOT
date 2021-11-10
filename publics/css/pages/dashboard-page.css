@@ -25,19 +25,30 @@
 
 .topics>*{
     height: 100px;
-    margin: 20px 0;
-    /* border: 1px solid #ccc; */
-    box-shadow: 4px 4px 10px #888888;
+    margin: 10px 0;
+    border: 1px solid #aaa;
+    box-shadow: 2px 2px 6px #aaa;
     text-decoration: none;
     color: black;
 }
 
-.topic:hover{
-    background-color: rgb(233, 233, 233);
+.topic:hover{    
+    transform: scale(1.05);
+    transition: .4s;
+    background-color: #FFB13C;
+}
+.topic:hover .data .temp, 
+.topic:hover .data .humid,
+.topic:hover .name
+{
+    color: white;
+}
+.topic.active:hover{    
+    background-color: #166cbd;
 }
 
 .topic:active{
-    background-color: rgb(124, 124, 124);
+    filter: brightness(0.8);
 }
 
 .topic .stt{
@@ -46,6 +57,10 @@
     height: 100px;
     box-sizing: border-box;
     background-color: #FFB13C;
+}
+
+.topic.active .stt{
+    background-color: #166cbd;
 }
 
 .topic .name{
@@ -76,4 +91,10 @@
 }
 .data i{
     margin-right: 8px;
+}
+
+@media only screen and (max-width: 900px){
+    .topics-container{
+        padding: 50px 30px;
+    }
 }

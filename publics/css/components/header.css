@@ -28,3 +28,9 @@
     margin: 15px 30px;
     border-radius: 10px;
 }
+
+@media only screen and (max-width: 900px){
+    .header-title{
+        visibility: hidden;
+    }
+}

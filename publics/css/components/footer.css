@@ -31,3 +31,22 @@
 .footer-content h2{
     margin-bottom: 10px;
 }
+
+@media only screen and (max-width: 900px){
+    .footer *{
+        font-size: 95%
+    }
+    .footer{
+        flex-direction: column;
+        height: fit-content;
+        padding-bottom: 20px;
+    }
+    .footer .logo {
+        width: 100%;
+        padding: 20px;
+    }
+    .footer-content{
+        width: 100%;
+        text-align: center;
+    }
+}

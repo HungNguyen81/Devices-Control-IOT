@@ -17,7 +17,7 @@ var mqttOptions = {
   username: "",
   password: "",
 };
-var client;
+var client, socketId;
 
 app.use(cors());
 app.use(express.json());
@@ -66,40 +66,18 @@ app.post("/login", async (req, res) => {
     mqttOptions.username = user.mqtt_user;
     mqttOptions.password = user.mqtt_pass;
 
-    // connect to mqtt broker
-    client = mqtt.connect(mqttOptions);
-    setUpCallbacksMqtt(client);
-
     // setup socket.io
     io.on("connection", (socket) => {
       console.log("new connection with ID:", socket.id);
+      socketId = socket.id;
       socket.on("disconnect", () => {
         console.log("socket", socket.id, "disconnected");
-        
       });
-
-      try {
-        // client.removeListener('message');
-        client.on('message', (topic, message) => {
-          // if(topic == 'scs/home2')console.log('Received message:', topic, message.toString());
-          let arr = message.toString().split(" ");
-          let keyword = arr[0]; // temp, humid, ctrl
-          let value = arr[1];
-          let stt = arr[2];
-          if (topic == 'scs/home2' && stt) console.log("from client",stt, message.toString());
-
-          // if (!stt) {
-          socket.emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
-          if (keyword == 'ctrl') {
-            updateDeviceStatus(user.email, topic, value);
-          }
-          // }
-          // if(topic == 'scs/home2')console.log('emit:', keyword, [new Date().toISOString(), value]);
-        });
-      } catch (e) {
-        console.log("MQTT Client connection failed");
-      }
     });
+
+    // connect to mqtt broker
+    client = mqtt.connect(mqttOptions);
+    setUpCallbacksMqtt(client, user.email);
 
     res.status(200).end();
   } else {
@@ -232,7 +210,7 @@ async function getTopics(email) {
   return user.topics;
 }
 
-function setUpCallbacksMqtt(client) {
+function setUpCallbacksMqtt(client, email) {
   //setup the callbacks
   client.on("connect", () => {
     console.log("MQTT Connected");
@@ -240,19 +218,42 @@ function setUpCallbacksMqtt(client) {
 
   client.on("error", (error) => {
     console.log(error);
-    client.end();
+    // client.end();
   });
 
   client.on("close", () => {
     console.log("close");
   });
+
+  try {
+    //   client.subscribe('scs/home1');
+
+    client.on("message", (topic, message) => {
+      let arr = message.toString().split(" ");
+      let keyword = arr[0]; // temp, humid, ctrl
+      let value = arr[1];
+      let stt = arr[2];
+      if (topic == 'scs/home2' && stt) console.log("from client", stt, message.toString());
+      try{
+        io.to(`${socketId}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
+        // console.log(socketId);
+        
+      } catch(err){
+
+      }
+      if (keyword == 'ctrl') {
+        updateDeviceStatus(email, topic, value);
+      }
+    });
+  } catch (e) {
+    console.log("MQTT Client connection failed");
+  }
 }
 
 // Initialize Server
 const main = async () => {
   // await mongoose.connect("mongodb://localhost:27017/IoTdb");
   await mongoose.connect("mongodb+srv://scs:scs-team@scs.f5vhz.mongodb.net/IoTdb");
-  //console.log(mongoose.connection.readyState);
 
   var PORT = process.env.PORT || 8080;
   server.listen(PORT, () => {

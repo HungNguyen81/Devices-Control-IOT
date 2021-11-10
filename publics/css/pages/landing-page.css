@@ -24,11 +24,40 @@ body {
     font-size: 50px;
     top: 135px;
 }
-.cover .cover-title-2{
+
+.cover .cover-title-2 {
     font-size: 35px;
     top: 215px;
 }
-.cover-title-3{
+
+.cover-title-3 {
     font-size: 55px;
     top: 280px;
+}
+
+@media only screen and (max-width: 900px) {
+    .cover-title-1 {
+        font-size: 30px !important;
+        text-align: right;
+        top: auto !important;
+        bottom: 152px;
+    }
+    .cover-title-2 {
+        text-align: right;
+        font-size: 21px !important;
+        top: auto !important;
+        bottom: 110px !important;
+    }
+    .cover-title-3 {
+        top: auto;
+        bottom: 33px;
+    }
+    .btn-dashboard {
+        top: auto !important;
+        bottom: 219px;
+    }
+    .cover{
+    background-position-y: 0px;
+    background-position-x: -60px;
+    }
 }

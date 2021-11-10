@@ -25,7 +25,8 @@
             <h2>DASHBOARD</h2>
             <div class="topics">
                 <% for(let topic of topics) { %>
-                    <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>">
+                    <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>"
+                        onclick="checkActive(event)">
                         <div class="stt"></div>
                         <div class="name">
                             <%- topic.displayName -%>
@@ -51,20 +52,20 @@
                 function getDataFromSocket() {
                     '<% for(let [i,t] of topics.entries()) { %>'
                     console.log('<%= t.name %>');
-                    
+
                     socket.on('<%= t.name %>/data/temp', data => {
                         let [date, value] = data;
                         let temp = document.getElementById('<%= t.name %>/data/temp');
 
-                        temp.innerText = Math.round(value * 100) / 100;                        
+                        temp.innerText = Math.round(value * 100) / 100;
                     });
                     socket.on('<%= t.name %>/data/humid', data => {
                         let [date, value] = data;
                         let humid = document.getElementById('<%= t.name %>/data/humid');
 
                         humid.innerText = Math.round(value * 100) / 100;
-                        // if(stt.style.backgroundColor == '#FFB13C'){
-                            setStatus('<%= t.name %>');
+                        // if(topic.style.backgroundColor == '#FFB13C'){
+                        setStatus('<%= t.name %>');
                         // }
                     });
                     '<% } %>'
@@ -73,18 +74,28 @@
                 function setStatus(id) {
                     clearTimeout(mapTimeout.get(id));
 
-                    let stt = document.getElementById(id).children[0];
-                    stt.style.backgroundColor = '#166cbd';
+                    let topic = document.getElementById(id);
 
-                    let tmp =setTimeout(() => {
-                        resetStatus(stt);
+                    topic.classList.add('active');
+
+                    let tmp = setTimeout(() => {
+                        resetStatus(topic);
                         document.getElementById(`${id}/data/temp`).innerText = '--.--';
                         document.getElementById(`${id}/data/humid`).innerText = '--.--';
                     }, 5000);
-                    mapTimeout.set(id,tmp);
+                    mapTimeout.set(id, tmp);
                 }
-                function resetStatus(stt) {
-                    stt.style.backgroundColor = '#FFB13C'
+                function resetStatus(topic) {
+                    topic.classList.remove('active')
+                }
+
+                function checkActive(event) {
+                    if (!event.target.classList.contains('active')) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        alert('Khu vực này chưa được kết nối.')
+                        return;
+                    }
                 }
 
                 window.onload = getDataFromSocket;

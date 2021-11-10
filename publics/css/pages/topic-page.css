@@ -47,7 +47,7 @@
     border-radius: 10px;
 }
 
-.temp-data, .humid-data{
+.temp-data, .humid-data {
     font-size: 130%;
     font-weight: bold;
     height: 20px;
@@ -56,7 +56,7 @@
     white-space: nowrap;
 }
 
-.current-data i{
+.current-data i {
     font-size: 150%;
     line-height: 40px;
     margin-right: 10px;
@@ -65,6 +65,7 @@
 .temp-data {
     color: #F84343;
 }
+
 .humid-data {
     color: #00B2EB;
 }
@@ -100,7 +101,7 @@
     height: 100px;
     border: 1px solid #ccc;
     box-shadow: 4px 4px 10px #888888;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .devices>div .status {
@@ -117,7 +118,6 @@
     background-color: #24b829;
 }
 
-
 .device-name, .status-text {
     margin-left: 70px;
     margin-top: 20px;
@@ -132,8 +132,8 @@
     color: #5F5E5E;
 }
 
-
 /* switch slider */
+
 .switch {
     position: absolute;
     right: 0;
@@ -195,4 +195,51 @@ input:checked+.slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+@media only screen and (max-width: 900px) {
+    .topics-container {
+        width: calc(100% - 40px);
+    }
+    .temp-humid {
+        width: 100%;
+        flex-direction: column-reverse;
+    }
+    .current-data {
+        width: 100%;
+        height: fit-content;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+    .temp-data {
+        height: 40px;
+        padding: 20px 50px 5px 50px;
+    }
+    .humid-data {
+        height: 40px;
+        padding: 5px 50px 20px 50px;
+    }
+    .charts {
+        width: 100%;
+    }
+    .devices {
+        width: 100% !important;
+    }
+    .device-name, .status-text {
+        margin-left: 40px;
+    }
+    .switch {
+        transform: translate(-31px, -28px);
+        width: 40px;
+        height: 22px;
+    }
+    .slider::before {
+        width: 18px;
+        height: 18px;
+        left: 3px;
+        bottom: 2px;
+    }
+    input:checked+.slider:before{
+        transform: translate(17px);
+    }
 }
