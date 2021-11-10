@@ -1,5 +1,4 @@
-var mqtt = require('mqtt')
-
+var mqtt = require('mqtt');
 var options = {
     host: '1af8e2f5e0ae40308432e82daf1071e0.s1.eu.hivemq.cloud',
     port: 8883,

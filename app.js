@@ -2,6 +2,9 @@ const express = require('express');
 const session = require('express-session');
 const cors = require('cors');
 const mqtt = require('mqtt');
+const mongoose = require('mongoose')
+const { User } = require('./Models/User');
+
 const app = express();
 const SESSION_TIME = 30 * 24 * 3600 * 1000; // 30 ngày
 const server = require('http').Server(app);
@@ -27,9 +30,7 @@ app.use(session({
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/publics'));
 
-// start server
-var PORT = process.env.PORT || 8080;
-server.listen(PORT, () => { console.log(`server is listening on port: ${PORT}`) });
+
 
 //index page
 app.get('/', function (req, res) {
@@ -51,17 +52,21 @@ app.get('/login', (req, res) => {
 });
 
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
-
-  if (email == "hung" && password == "123") { //TODO: đoạn này thay bằng truy vấn csdl
+  
+  const user = await User.findOne({email: email})
+  
+  if (user && password == user.password) { 
+  //TODO: đoạn này thay bằng truy vấn csdl
+  
     // set session
-    req.session.User = req.body.email;
-    req.session.Name = 'Hung Nguyen Ngoc';    //TODO: đoạn này vào csdl tìm kiếm name của object có email của client
+    req.session.User = user.email;
+    req.session.Name = user.username;    //TODO: đoạn này vào csdl tìm kiếm name của object có email của client
 
-    mqttOptions.username = 'scs-home1';       //TODO: lấy tên đăng nhập và mk kết nối hiveMQ từ object đã lấy từ csdl
-    mqttOptions.password = 'SCS-home1';
+    mqttOptions.username = "scs-home1";       //TODO: lấy tên đăng nhập và mk kết nối hiveMQ từ object đã lấy từ csdl
+    mqttOptions.password = "SCS-home1";
 
     // connect to mqtt broker
     client = mqtt.connect(mqttOptions);
@@ -214,3 +219,16 @@ function setUpCallbacksMqtt(client) {
     console.log('close');
   })
 }
+
+// Initialize Server
+const main = async () => {
+
+  await mongoose.connect('mongodb://localhost:27017/IoTdb');
+  //console.log(mongoose.connection.readyState);
+
+  var PORT = process.env.PORT || 8080;
+  server.listen(PORT, () => { console.log(`server is listening on port: ${PORT}`) });
+}
+
+main();
+
