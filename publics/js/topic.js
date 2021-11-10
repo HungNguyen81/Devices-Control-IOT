@@ -114,17 +114,19 @@ window.addEventListener('load', function () {
 });
 
 
-function toggleStatus(checkbox) {
+function toggleSwitch(checkbox){
     let device = checkbox.parentNode.parentNode;
-    let statusText = device.children[2];
-
     device.classList.toggle('active');
+    let statusText = device.children[2];
 
     if (checkbox.checked) {
         statusText.innerText = 'ON';
     } else {
         statusText.innerText = 'OFF';
     }
+}
+
+function toggleStatus(checkbox) {
 
     // POST /devices
     // |-body: 
@@ -141,11 +143,33 @@ function toggleStatus(checkbox) {
         },
         "data": JSON.stringify({
             topic: topic,
-            deviceid: device.getAttribute('deviceid')
-        })
+            id: device.getAttribute('deviceid')
+        }),
+        success: data=>{
+            toggleSwitch(checkbox)
+        },
+        error: (xhr, status, error) => {
+            alert(`Error`);
+            console.log(xhr, status, error);
+        }
     };
 
-    $.ajax(settings).done(response => {
-        console.log(response);
+    $.ajax({
+        "url": '/devices',
+        "method": 'POST',
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+            topic: topic,
+            id: device.getAttribute('deviceid')
+        }),
+        success: data=>{
+            toggleSwitch(checkbox)
+        },
+        error: (xhr, status, error) => {
+            alert(`Error`);
+            console.log(xhr, status, error);
+        }
     });
 }
