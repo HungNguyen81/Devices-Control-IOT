@@ -75,21 +75,26 @@ app.post("/login", async (req, res) => {
       console.log("new connection with ID:", socket.id);
       socket.on("disconnect", () => {
         console.log("socket", socket.id, "disconnected");
+        
       });
 
       try {
-        //   client.subscribe('scs/home1');
-
-        client.on("message", (topic, message) => {
-          //Called each time a message is received
-          // console.log('Received message:', topic, message.toString());
-
+        // client.removeListener('message');
+        client.on('message', (topic, message) => {
+          // if(topic == 'scs/home2')console.log('Received message:', topic, message.toString());
           let arr = message.toString().split(" ");
-          let keyword = arr[0];
+          let keyword = arr[0]; // temp, humid, ctrl
           let value = arr[1];
+          let stt = arr[2];
+          if (topic == 'scs/home2' && stt) console.log("from client",stt, message.toString());
 
-          socket.emit(`${topic}/${keyword}`, [new Date().toISOString(), value]);
-          // console.log('emit:', keyword, [new Date().toISOString(), value]);
+          // if (!stt) {
+          socket.emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
+          if (keyword == 'ctrl') {
+            updateDeviceStatus(user.email, topic, value);
+          }
+          // }
+          // if(topic == 'scs/home2')console.log('emit:', keyword, [new Date().toISOString(), value]);
         });
       } catch (e) {
         console.log("MQTT Client connection failed");
@@ -112,16 +117,12 @@ app.get("/logout", (req, res) => {
 
 //dashboard
 app.get("/dashboard", async (req, res) => {
-  console.log("log");
   // check session
   if (req.session.User) {
     let topics = await getTopics(req.session.User);
-    // client.end();
-    // client = mqtt.connect(mqttOptions);
 
     for (let topic of topics) {
       client.subscribe(`${topic.name}/data`);
-      // client.subscribe(`${topic.name}/ctrl`);
       console.log("sub", topic.name, "/data");
     }
 
@@ -144,11 +145,7 @@ app.get("/devices", async (req, res) => {
       displayName,
       devices;
 
-    // for (let topic of topics) {
-    //   client.unsubscribe(topic.name);
-    // }
-    client.subscribe(`${topic}/data`);
-    // client.subscribe(`${topic}/ctrl`);
+    client.subscribe(`${topic}`);
 
     topics.forEach((t) => {
       if (t.name == topic) {
@@ -175,33 +172,55 @@ app.post("/devices", async (req, res) => {
     let topic = req.body.topic;
     let deviceId = req.body.id;
     let email = req.session.User;
-    // let email = 'test@gmail.com';
+    let stt = null;
 
-    const user = await User.findOne({ email: email });
 
-    let topics = user.topics, stt;
-    let newTopics = new Array()
+    try {
+      stt = await updateDeviceStatus(email, topic, deviceId);
+      if (!stt) res.status(500).json({ msg: 'update failed' });
 
-    topics.forEach((t) => {
-      if (t.name == topic) {
-        stt = t.devices[deviceId - 1].status;
-        t.devices[deviceId - 1].status = (stt == "on") ? "off" : "on";
-        // console.log("d:",t.devices, stt);
-      }
-      newTopics.push(t);
-    });
+      client.publish(`${topic}`, `ctrl ${deviceId} ${stt}`);
+      console.log(`ctrl ${deviceId} ${stt}`);
+    } catch (e) {
+      console.log(e);
+    }
 
+    res.status(200).json({ msg: `device ${deviceId} change status to ${stt}` })
+  } else {
+    console.log("post failed");
+    res.status(400).json({ msg: "not logged in" })
+  }
+});
+
+async function updateDeviceStatus(email, topic, deviceId) {
+  const user = await User.findOne({ email: email });
+
+  let topics = user.topics, stt;
+  let newTopics = new Array()
+
+  topics.forEach((t) => {
+    if (t.name == topic) {
+      stt = t.devices[deviceId - 1].status;
+      stt = (stt == "on") ? "off" : "on";
+      t.devices[deviceId - 1].status = stt;
+    }
+    newTopics.push(t);
+  });
+
+  try {
     await User.updateOne(
       { email: email },
       {
-        $set: {topics : newTopics},
+        $set: { topics: newTopics },
       },
     );
-    res.status(200).json({msg: `device ${deviceId} change status to ${stt == 'on'? 'off':'on'}`})
-  } else {
-    res.status(400).json({msg: "not logged in"})
+  } catch (e) {
+    console.log(e.message);
+    return null;
   }
-});
+
+  return stt;
+}
 
 //sign up
 app.post("signup", (req, res) => {
@@ -210,32 +229,7 @@ app.post("signup", (req, res) => {
 
 async function getTopics(email) {
   const user = await User.findOne({ email: email });
-  console.log(user);
   return user.topics;
-
-  // //dữ liệu giả sử
-  // let topics = [
-  //   {
-  //     name: "scs/home1",
-  //     displayName: "Biệt thự Đà Lạt",
-  //     devices: [
-  //       { id: 1, name: "Đèn phòng khách", status: "on" },
-  //       { id: 2, name: "Đèn phòng ngủ", status: "off" },
-  //       { id: 3, name: "Đèn phòng ăn", status: "off" },
-  //     ],
-  //   },
-  //   {
-  //     name: "scs/home2",
-  //     displayName: "Biệt thự Hà Nội",
-  //     devices: [
-  //       { id: 1, name: "Đèn phòng khách", status: "on" },
-  //       { id: 2, name: "Đèn phòng ngủ", status: "off" },
-  //       { id: 3, name: "Đèn phòng ăn", status: "on" },
-  //     ],
-  //   },
-  // ];
-
-  // return topics;
 }
 
 function setUpCallbacksMqtt(client) {
@@ -246,7 +240,7 @@ function setUpCallbacksMqtt(client) {
 
   client.on("error", (error) => {
     console.log(error);
-    // client.end();
+    client.end();
   });
 
   client.on("close", () => {
@@ -256,7 +250,8 @@ function setUpCallbacksMqtt(client) {
 
 // Initialize Server
 const main = async () => {
-  await mongoose.connect("mongodb://localhost:27017/IoTdb");
+  // await mongoose.connect("mongodb://localhost:27017/IoTdb");
+  await mongoose.connect("mongodb+srv://scs:scs-team@scs.f5vhz.mongodb.net/IoTdb");
   //console.log(mongoose.connection.readyState);
 
   var PORT = process.env.PORT || 8080;

@@ -12,9 +12,6 @@ function getParameterByName(name, url = window.location.href) {
 
 
 let topic = getParameterByName('t');
-$(window).on('popstate', function (event) {
-    alert("pop");
-});
 
 function getTempDataFromSocket() {
     socket.on(`${topic}/data/temp`, data => {
@@ -114,11 +111,11 @@ window.addEventListener('load', function () {
 });
 
 
-function toggleSwitch(checkbox){
+function toggleSwitch(checkbox) {
     let device = checkbox.parentNode.parentNode;
-    device.classList.toggle('active');
     let statusText = device.children[2];
 
+    device.classList.toggle('active');
     if (checkbox.checked) {
         statusText.innerText = 'ON';
     } else {
@@ -126,33 +123,17 @@ function toggleSwitch(checkbox){
     }
 }
 
-function toggleStatus(checkbox) {
+socket.on(`${topic}/ctrl`, data => {
+    let [time, id, stt] = data;
+    let checkbox = document.getElementById(`device-${id}`);
+    if(stt) checkbox.checked = !checkbox.checked;
+    toggleSwitch(checkbox);
+    console.log(data);
+})
 
-    // POST /devices
-    // |-body: 
-    /*  {
-            topic: topic,
-            deviceid: device.getAttribute('deviceid')
-        }
-    */
-    var settings = {
-        "url": '/devices',
-        "method": 'POST',
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "data": JSON.stringify({
-            topic: topic,
-            id: device.getAttribute('deviceid')
-        }),
-        success: data=>{
-            toggleSwitch(checkbox)
-        },
-        error: (xhr, status, error) => {
-            alert(`Error`);
-            console.log(xhr, status, error);
-        }
-    };
+function toggleStatus(checkbox) {
+    let device = checkbox.parentNode.parentNode;
+    // checkbox.checked = !checkbox.checked
 
     $.ajax({
         "url": '/devices',
@@ -164,12 +145,13 @@ function toggleStatus(checkbox) {
             topic: topic,
             id: device.getAttribute('deviceid')
         }),
-        success: data=>{
-            toggleSwitch(checkbox)
+        "success": data => {
+            // toggleSwitch();
         },
-        error: (xhr, status, error) => {
+        "error": (xhr, status, error) => {
             alert(`Error`);
             console.log(xhr, status, error);
+            checkbox.checked = !checkbox.checked;
         }
     });
 }
