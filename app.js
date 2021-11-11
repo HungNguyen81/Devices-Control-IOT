@@ -9,7 +9,6 @@ const app = express();
 const SESSION_TIME = 30 * 24 * 3600 * 1000; // 30 ngày
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
-const uuidv4 = require("uuid/v4");
 
 var mqttOptions = {
   host: "1af8e2f5e0ae40308432e82daf1071e0.s1.eu.hivemq.cloud",
