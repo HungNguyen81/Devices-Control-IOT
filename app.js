@@ -244,6 +244,7 @@ function setUpCallbacksMqtt(client, email) {
       if (keyword == 'ctrl') {
         updateDeviceStatus(email, topic, value);
       }
+      client.end();
     });
   } catch (e) {
     console.log("MQTT Client connection failed");
