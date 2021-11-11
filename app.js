@@ -237,6 +237,7 @@ function setUpCallbacksMqtt(client, email) {
       let stt = arr[2];
       if (topic == 'scs/home2' && stt) console.log("from client", stt, message.toString());
       try{
+        console.log('to:', socketId);
         io.to(`${socketId}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
         // console.log(socketId);
         
