@@ -157,8 +157,8 @@ app.post("/devices", async (req, res) => {
 
 
     try {
-      stt = await updateDeviceStatus(email, topic, deviceId);
-      if (!stt) res.status(500).json({ msg: 'update failed' });
+      // stt = await updateDeviceStatus(email, topic, deviceId);
+      // if (!stt) res.status(500).json({ msg: 'update failed' });
 
       client.publish(`${topic}`, `ctrl ${deviceId} ${stt}`);
       console.log(`ctrl ${deviceId} ${stt}`);
@@ -182,6 +182,7 @@ async function updateDeviceStatus(email, topic, deviceId) {
   topics.forEach((t) => {
     if (t.name == topic) {
       stt = t.devices[deviceId - 1].status;
+      console.log(stt);
       stt = (stt == "on") ? "off" : "on";
       t.devices[deviceId - 1].status = stt;
     }
