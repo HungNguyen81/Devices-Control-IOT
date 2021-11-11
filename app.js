@@ -17,7 +17,7 @@ var mqttOptions = {
   username: "",
   password: "",
 };
-var client, socketId, email;
+var client, socketId = new Array(), email;
 
 app.use(cors());
 app.use(express.json());
@@ -83,9 +83,10 @@ app.post("/login", async (req, res) => {
 // setup socket.io
 io.on("connection", (socket) => {
   console.log("new connection with ID:", socket.id);
-  socketId = socket.id;
+  socketId.push(socket.id);
   socket.on("disconnect", () => {
     console.log("socket", socket.id, "disconnected");
+    socketId.splice(socketId.indexOf(socket.id), 1);
   });
 });
 
@@ -236,12 +237,14 @@ function setUpCallbacksMqtt(client, email) {
       let value = arr[1];
       let stt = arr[2];
       if (topic == 'scs/home2' && stt) console.log("from client", stt, message.toString());
-      try{
-        console.log('to:', socketId);
-        io.to(`${socketId}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
+      try {
+        socketId.forEach(id => {
+          console.log('to:', id);
+          io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
+        });
         // console.log(socketId);
-        
-      } catch(err){
+
+      } catch (err) {
 
       }
       if (keyword == 'ctrl') {
