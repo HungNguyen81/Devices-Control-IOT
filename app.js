@@ -76,8 +76,8 @@ app.post("/login", async (req, res) => {
     });
 
     // connect to mqtt broker
-    let client = mqtt.connect(mqttOptions);
-    setUpCallbacksMqtt(client)
+    client = mqtt.connect(mqttOptions);
+    setUpCallbacksMqtt(client, user.email);
 
     res.status(200).end();
   } else {
@@ -210,9 +210,7 @@ async function getTopics(email) {
   return user.topics;
 }
 
-// setUpCallbacksMqtt(client);
-
-function setUpCallbacksMqtt(client) {
+function setUpCallbacksMqtt(client, email) {
   //setup the callbacks
   client.on("connect", () => {
     console.log("MQTT Connected");
@@ -232,8 +230,7 @@ function setUpCallbacksMqtt(client) {
 
     client.on("message", (topic, message) => {
       let arr = message.toString().split(" ");
-      let keyword = arr[0].split(':')[0]; // temp, humid, ctrl:[email]
-      let email = arr[0].split(':')[1];
+      let keyword = arr[0]; // temp, humid, ctrl
       let value = arr[1];
       let stt = arr[2];
       if (topic == 'scs/home2' && stt) console.log("from client", stt, message.toString());
@@ -244,7 +241,7 @@ function setUpCallbacksMqtt(client) {
       } catch(err){
 
       }
-      if (keyword == 'ctrl' && email) {
+      if (keyword == 'ctrl') {
         updateDeviceStatus(email, topic, value);
       }
     });
