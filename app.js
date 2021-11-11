@@ -231,7 +231,7 @@ function setUpCallbacksMqtt(client) {
   });
 
   client.on("close", () => {
-    console.log("close");
+    console.log("close", client);
   });
 
   try {
