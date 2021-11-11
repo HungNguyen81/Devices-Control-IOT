@@ -127,7 +127,8 @@ socket.on(`${topic}/ctrl`, data => {
     let [time, id, stt] = data;
     let checkbox = document.getElementById(`device-${id}`);
     
-    if(stt) checkbox.checked = !checkbox.checked;
+    // if(stt)
+     checkbox.checked = !checkbox.checked;
     toggleSwitch(checkbox);
     console.log(data);
 })
