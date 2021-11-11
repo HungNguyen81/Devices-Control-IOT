@@ -76,7 +76,8 @@ app.post("/login", async (req, res) => {
     });
 
     // connect to mqtt broker
-    client = mqtt.connect(mqttOptions);
+    let client = mqtt.connect(mqttOptions);
+    setUpCallbacksMqtt(client)
 
     res.status(200).end();
   } else {
@@ -209,7 +210,7 @@ async function getTopics(email) {
   return user.topics;
 }
 
-setUpCallbacksMqtt(client);
+// setUpCallbacksMqtt(client);
 
 function setUpCallbacksMqtt(client) {
   //setup the callbacks
