@@ -48,4 +48,4 @@ function sendControlMsg(){
     setTimeout(sendControlMsg, 5000);
 }
 
-sendControlMsg();
+// sendControlMsg();
