@@ -135,7 +135,7 @@ socket.on(`${topic}/ctrl`, data => {
 
 function toggleStatus(checkbox) {
     let device = checkbox.parentNode.parentNode;
-    // checkbox.checked = !checkbox.checked
+    checkbox.checked = !checkbox.checked
 
     $.ajax({
         "url": '/devices',
