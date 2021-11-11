@@ -17,7 +17,7 @@ var mqttOptions = {
   username: "",
   password: "",
 };
-var client, socketId;
+var client, socketId, email;
 
 app.use(cors());
 app.use(express.json());
@@ -63,17 +63,8 @@ app.post("/login", async (req, res) => {
     req.session.User = user.email;
     req.session.Name = user.name; // têN người dùng
 
-    mqttOptions.username = user.mqtt_user;
+    email = mqttOptions.username = user.mqtt_user;
     mqttOptions.password = user.mqtt_pass;
-
-    // setup socket.io
-    io.on("connection", (socket) => {
-      console.log("new connection with ID:", socket.id);
-      socketId = socket.id;
-      socket.on("disconnect", () => {
-        console.log("socket", socket.id, "disconnected");
-      });
-    });
 
     // connect to mqtt broker
     mqttOptions.clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
@@ -87,6 +78,15 @@ app.post("/login", async (req, res) => {
       .status(400)
       .json({ msg: "Tên đăng nhập hoặc mật khẩu không chính xác." });
   }
+});
+
+// setup socket.io
+io.on("connection", (socket) => {
+  console.log("new connection with ID:", socket.id);
+  socketId = socket.id;
+  socket.on("disconnect", () => {
+    console.log("socket", socket.id, "disconnected");
+  });
 });
 
 //logout
