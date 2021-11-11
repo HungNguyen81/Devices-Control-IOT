@@ -76,8 +76,8 @@ app.post("/login", async (req, res) => {
     });
 
     // connect to mqtt broker
-    let client = mqtt.connect(mqttOptions);
-    setUpCallbacksMqtt(client)
+    client = mqtt.connect(mqttOptions);
+    setUpCallbacksMqtt(client, user.email);
 
     res.status(200).end();
   } else {
@@ -98,8 +98,6 @@ app.get("/dashboard", async (req, res) => {
   // check session
   if (req.session.User) {
     let topics = await getTopics(req.session.User);
-    let client = mqtt.connect(mqttOptions);
-    setUpCallbacksMqtt(client);
 
     for (let topic of topics) {
       client.subscribe(`${topic.name}/data`);
@@ -124,8 +122,6 @@ app.get("/devices", async (req, res) => {
     let topics = await getTopics(req.session.User),
       displayName,
       devices;
-    let client = mqtt.connect(mqttOptions);
-    setUpCallbacksMqtt(client);
 
     client.subscribe(`${topic}`);
 
@@ -155,8 +151,6 @@ app.post("/devices", async (req, res) => {
     let deviceId = req.body.id;
     let email = req.session.User;
     let stt = null;
-    let client = mqtt.connect(mqttOptions);
-    setUpCallbacksMqtt(client)
 
 
     try {
@@ -216,10 +210,7 @@ async function getTopics(email) {
   return user.topics;
 }
 
-setUpCallbacksMqtt(client);
-
-function setUpCallbacksMqtt(client) {
-  try{
+function setUpCallbacksMqtt(client, email) {
   //setup the callbacks
   client.on("connect", () => {
     console.log("MQTT Connected");
@@ -231,7 +222,7 @@ function setUpCallbacksMqtt(client) {
   });
 
   client.on("close", () => {
-    console.log("close", client.id);
+    console.log("close");
   });
 
   try {
@@ -239,26 +230,24 @@ function setUpCallbacksMqtt(client) {
 
     client.on("message", (topic, message) => {
       let arr = message.toString().split(" ");
-      let keyword = arr[0].split(':')[0]; // temp, humid, ctrl:[email]
-      let email = arr[0].split(':')[1];
+      let keyword = arr[0]; // temp, humid, ctrl
       let value = arr[1];
       let stt = arr[2];
       if (topic == 'scs/home2' && stt) console.log("from client", stt, message.toString());
-      try {
+      try{
         io.to(`${socketId}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
         // console.log(socketId);
-
-      } catch (err) {
+        
+      } catch(err){
 
       }
-      if (keyword == 'ctrl' && email) {
+      if (keyword == 'ctrl') {
         updateDeviceStatus(email, topic, value);
       }
     });
   } catch (e) {
     console.log("MQTT Client connection failed");
   }
-}catch(er){}
 }
 
 // Initialize Server
