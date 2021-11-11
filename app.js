@@ -9,6 +9,7 @@ const app = express();
 const SESSION_TIME = 30 * 24 * 3600 * 1000; // 30 ngày
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
+const uuidv4 = require("uuid/v4");
 
 var mqttOptions = {
   host: "1af8e2f5e0ae40308432e82daf1071e0.s1.eu.hivemq.cloud",
@@ -76,7 +77,9 @@ app.post("/login", async (req, res) => {
     });
 
     // connect to mqtt broker
+    mqttOptions.clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
     client = mqtt.connect(mqttOptions);
+
     setUpCallbacksMqtt(client, user.email);
 
     res.status(200).end();
@@ -244,7 +247,6 @@ function setUpCallbacksMqtt(client, email) {
       if (keyword == 'ctrl') {
         updateDeviceStatus(email, topic, value);
       }
-      client.end();
     });
   } catch (e) {
     console.log("MQTT Client connection failed");
