@@ -218,7 +218,7 @@ function setUpCallbacksMqtt(client, email) {
 
   client.on("error", (error) => {
     console.log(error);
-    // client.end();
+    client.end();
   });
 
   client.on("close", () => {
