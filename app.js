@@ -231,7 +231,7 @@ function setUpCallbacksMqtt(client, email) {
   try {
     //   client.subscribe('scs/home1');
 
-    client.on("message", (topic, message) => {
+    client.on("message", async (topic, message) => {
       let arr = message.toString().split(" ");
       let keyword = arr[0]; // temp, humid, ctrl
       let value = arr[1];
@@ -248,7 +248,7 @@ function setUpCallbacksMqtt(client, email) {
 
       }
       if (keyword == 'ctrl') {
-        updateDeviceStatus(email, topic, value);
+        await updateDeviceStatus(email, topic, value);
       }
     });
   } catch (e) {
