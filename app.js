@@ -219,6 +219,7 @@ async function getTopics(email) {
 setUpCallbacksMqtt(client);
 
 function setUpCallbacksMqtt(client) {
+  try{
   //setup the callbacks
   client.on("connect", () => {
     console.log("MQTT Connected");
@@ -257,6 +258,7 @@ function setUpCallbacksMqtt(client) {
   } catch (e) {
     console.log("MQTT Client connection failed");
   }
+}catch(er){}
 }
 
 // Initialize Server
