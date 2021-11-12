@@ -31,7 +31,7 @@
     text-decoration: none;
     color: black;
 }
-.topic *{
+.topic.active *{
     pointer-events: none;
 }
 .topic:hover{    
