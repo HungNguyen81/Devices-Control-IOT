@@ -47,7 +47,7 @@
             <div class="devices">
                 <% if(devices){ %>
                     <% for(let d of devices){ %>
-                        <div class="device<% if(d.status=='on'){ %> active<%}%>" deviceid="<%= d.id %>">
+                        <div class="device<% if(d.status){ %> active<%}%>" deviceid="<%= d.id %>">
                             <div class="status"></div>
                             <div class="device-name"><%- d.name -%></div>
                             <div class="status-text"><% if(d.status){ %>ON<% } else { %>OFF<% } %></div>
