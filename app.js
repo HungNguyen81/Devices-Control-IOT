@@ -241,7 +241,7 @@ function setUpCallbacksMqtt(client, email) {
       try {
         socketId.forEach(id => {
           console.log('to:', id);
-          io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt ? 0 : 1]);
+          io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt]);
         });
         // console.log(socketId);
 
