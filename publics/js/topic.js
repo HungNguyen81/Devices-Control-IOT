@@ -138,7 +138,7 @@ socket.on(`${topic}/ctrl`, data => {
     // if(stt)
     //  checkbox.checked = !checkbox.checked;
     // checkbox.checked = stt;
-    toggleSwitch(checkbox, stt);
+    toggleSwitch(checkbox, Number(stt));
     console.log(data);
 })
 
