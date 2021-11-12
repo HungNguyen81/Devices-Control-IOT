@@ -115,10 +115,15 @@ function toggleSwitch(checkbox, stt) {
     let device = checkbox.parentNode.parentNode;
     let statusText = device.children[2];
 
-    device.classList.toggle('active');
+    // device.classList.toggle('active');
     // if(stt != undefined){
         checkbox.checked = stt;
         statusText.innerText = stt? 'ON':'OFF';
+        if(stt){
+            device.classList.add('active')
+        }else{
+            device.classList.remove('active')
+        }
         console.log("switch:", checkbox.checked, stt, typeof(stt));
     // } 
     // else {
