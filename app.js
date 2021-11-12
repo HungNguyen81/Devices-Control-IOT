@@ -184,7 +184,7 @@ async function updateDeviceStatus(email, topic, deviceId) {
   topics.forEach((t) => {
     if (t.name == topic) {
       stt = t.devices[deviceId - 1].status;
-      console.log(stt);
+      console.log("STT",stt);
       stt = (stt == ON) ? OFF : ON;
       t.devices[deviceId - 1].status = stt;
     }
