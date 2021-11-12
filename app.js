@@ -1,3 +1,4 @@
+//#region import module and setup
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
@@ -6,10 +7,11 @@ const mongoose = require("mongoose");
 const { User } = require("./Models/User");
 
 const app = express();
-const SESSION_TIME = 30 * 24 * 3600 * 1000; // 30 ngày
+const SESSION_TIME = 30 * 24 * 3600 * 1000; // 20 ngày live-time cho session
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
+// options cho mqtt connection
 var mqttOptions = {
   host: "1af8e2f5e0ae40308432e82daf1071e0.s1.eu.hivemq.cloud",
   port: 8883,
@@ -17,7 +19,7 @@ var mqttOptions = {
   username: "",
   password: "",
 };
-var client, socketId = new Array(), email;
+var client, socketId = new Array();
 
 app.use(cors());
 app.use(express.json());
@@ -32,6 +34,10 @@ app.use(
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/publics"));
 
+//#endregion
+
+//#region ROUTERS
+
 //index page
 app.get("/", function (req, res) {
   if (req.session.User)
@@ -42,6 +48,7 @@ app.get("/", function (req, res) {
   else res.render("pages/landing-page", { isLoggin: false, name: null });
 });
 
+
 //login
 app.get("/login", (req, res) => {
   // check session
@@ -51,6 +58,7 @@ app.get("/login", (req, res) => {
     res.render("pages/login-page");
   }
 });
+
 
 app.post("/login", async (req, res) => {
   var email = req.body.email;
@@ -66,10 +74,13 @@ app.post("/login", async (req, res) => {
     email = mqttOptions.username = user.mqtt_user;
     mqttOptions.password = user.mqtt_pass;
 
-    // connect to mqtt broker
+    // tạo client id mới mỗi khi có user đăng nhập thành công
     mqttOptions.clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
+
+    // connect to mqtt broker
     client = mqtt.connect(mqttOptions);
 
+    // setup event listener cho mqtt client
     setUpCallbacksMqtt(client, user.email);
 
     res.status(200).end();
@@ -80,21 +91,19 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// setup socket.io
-io.on("connection", (socket) => {
-  console.log("new connection with ID:", socket.id);
-  socketId.push(socket.id);
-  socket.on("disconnect", () => {
-    console.log("socket", socket.id, "disconnected");
-    socketId.splice(socketId.indexOf(socket.id), 1);
-  });
+
+//sign up
+app.post("signup", (req, res) => {
+  //TODO: thêm dữ liệu vào csdl, chỉ dùng cho admin
 });
+
 
 //logout
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
+
 
 //dashboard
 app.get("/dashboard", async (req, res) => {
@@ -103,7 +112,7 @@ app.get("/dashboard", async (req, res) => {
     let topics = await getTopics(req.session.User);
 
     for (let topic of topics) {
-      client.subscribe(`${topic.name}/data`);
+      client.subscribe(`${topic.name}/data`); // kênh dữ liệu
       console.log("sub", topic.name, "/data");
     }
 
@@ -116,6 +125,7 @@ app.get("/dashboard", async (req, res) => {
   }
 });
 
+
 // GET /devices?t=scs/home1
 app.get("/devices", async (req, res) => {
   // check session
@@ -126,7 +136,7 @@ app.get("/devices", async (req, res) => {
       displayName,
       devices;
 
-    client.subscribe(`${topic}`);
+    client.subscribe(`${topic}`); // kênh điều khiển
 
     topics.forEach((t) => {
       if (t.name == topic) {
@@ -145,25 +155,17 @@ app.get("/devices", async (req, res) => {
   }
 });
 
+
 app.post("/devices", async (req, res) => {
   //update data trong database
   if (req.session.User) {
-    console.log(req.body);
-
-    let topic = req.body.topic;
-    let deviceId = req.body.id;
-    let email = req.session.User;
-    let stt = req.body.stt;
-
+    let topic     = req.body.topic;
+    let deviceId  = req.body.id;
+    let email     = req.session.User;
+    let stt       = req.body.stt;
 
     try {
       stt = await updateDeviceStatus(email, topic, deviceId);
-      console.log('status:', stt);
-      // if (!stt){
-      //   res.status(500).json({ msg: 'update failed' });
-      //   console.log('update failed');
-      //   return;
-      // }
 
       client.publish(`${topic}`, `ctrl ${deviceId} ${stt}`);
       console.log(`ctrl ${deviceId} ${stt}`);
@@ -178,18 +180,40 @@ app.post("/devices", async (req, res) => {
   }
 });
 
+//#endregion
+
+
+// setup socket.io
+io.on("connection", (socket) => {
+  console.log("new connection with ID:", socket.id);
+
+  //lưu socket id của client vào một mảng
+  socketId.push(socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("socket", socket.id, "disconnected");
+    socketId.splice(socketId.indexOf(socket.id), 1);
+  });
+});
+
+//#region FUNCTIONS
 
 const ON = 1, OFF = 0;
+/**
+ * Cập nhật trạng thái bật tắt của thiết bị trong db
+ * @param {*} email 
+ * @param {*} topic 
+ * @param {*} deviceId 
+ * @returns 
+ */
 async function updateDeviceStatus(email, topic, deviceId) {
-  const user = await User.findOne({ email: email });
-
-  let topics = user.topics, stt;
+  const user    = await User.findOne({ email: email });
+  let topics    = user.topics, stt;
   let newTopics = new Array()
 
   topics.forEach((t) => {
     if (t.name == topic) {
       stt = t.devices[deviceId - 1].status;
-      console.log("STT",stt);
       stt = (stt == ON) ? OFF : ON;
       t.devices[deviceId - 1].status = stt;
     }
@@ -211,16 +235,23 @@ async function updateDeviceStatus(email, topic, deviceId) {
   return stt;
 }
 
-//sign up
-app.post("signup", (req, res) => {
-  //TODO: thêm dữ liệu vào csdl, chỉ dùng cho admin
-});
 
+/**
+ * Lấy tất cả topic mà client publish
+ * @param {*} email 
+ * @returns 
+ */
 async function getTopics(email) {
   const user = await User.findOne({ email: email });
   return user.topics;
 }
 
+
+/**
+ * setup event listener cho mqtt client
+ * @param {*} client 
+ * @param {*} email 
+ */
 function setUpCallbacksMqtt(client, email) {
   //setup the callbacks
   client.on("connect", () => {
@@ -244,7 +275,7 @@ function setUpCallbacksMqtt(client, email) {
       let keyword = arr[0]; // temp, humid, ctrl
       let value = arr[1];
       let stt = arr[2];
-      if (topic == 'scs/home2' && stt) console.log("from client", client.clientId, stt, message.toString()); 
+      if (topic == 'scs/home2' && stt) console.log("from client", client.clientId, stt, message.toString());
       try {
         socketId.forEach(id => {
           console.log('to:', id);
@@ -264,7 +295,9 @@ function setUpCallbacksMqtt(client, email) {
   }
 }
 
-// Initialize Server
+//#endregion
+
+// khởi chạy serser và kết nối csdl mongodb
 const main = async () => {
   // await mongoose.connect("mongodb://localhost:27017/IoTdb");
   await mongoose.connect("mongodb+srv://scs:scs-team@scs.f5vhz.mongodb.net/IoTdb");

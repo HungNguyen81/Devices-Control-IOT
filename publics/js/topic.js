@@ -1,6 +1,6 @@
 let tempChart, humidChart;
 
-
+//#region SET UP DATA FOR LIVE-DATA CHARTS
 function getParameterByName(name, url = window.location.href) {
     name = name.replace(/[\[\]]/g, '\\$&');
     var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -38,7 +38,10 @@ function getHumidDataFromSocket() {
         document.querySelector('#humid-data').innerText = Math.round(value * 100) / 100;
     });
 }
+//#endregion
 
+
+//#region SETUP EVENT LISTENER FOR CHARTS
 window.addEventListener('load', function () {
     Highcharts.setOptions({
         time: {
@@ -109,44 +112,45 @@ window.addEventListener('load', function () {
         }]
     });
 });
+//#endregion
 
 
-function toggleSwitch(checkbox, stt) {
-    let device = checkbox.parentNode.parentNode;
-    let statusText = device.children[2];
-
-    // device.classList.toggle('active');
-    // if(stt != undefined){
-        checkbox.checked = stt;
-        statusText.innerText = stt? 'ON':'OFF';
-        if(stt){
-            device.classList.add('active')
-        }else{
-            device.classList.remove('active')
-        }
-        console.log("switch:", checkbox.checked, stt, typeof(stt));
-    // } 
-    // else {
-    //     if (checkbox.checked) {
-    //         statusText.innerText = 'ON';
-    //     } else {
-    //         statusText.innerText = 'OFF';
-    //     }
-    // }
-    
-}
-
+/**
+ * lắng nghe luồng điều khiển từ server
+ */
 socket.on(`${topic}/ctrl`, data => {
     let [time, id, stt] = data;
     let checkbox = document.getElementById(`device-${id}`);
-    
-    // if(stt)
-    //  checkbox.checked = !checkbox.checked;
-    // checkbox.checked = stt;
+
     toggleSwitch(checkbox, Number(stt));
     console.log(data);
 })
 
+
+/**
+ * thay đổi trạng thái thiết bị trên giao diện khi có msg điều khiển
+ * @param {*} checkbox 
+ * @param {*} stt 
+ */
+function toggleSwitch(checkbox, stt) {
+    let device = checkbox.parentNode.parentNode;
+    let statusText = device.children[2];
+
+    checkbox.checked = stt;
+    statusText.innerText = stt ? 'ON' : 'OFF';
+    if (stt) {
+        device.classList.add('active')
+    } else {
+        device.classList.remove('active')
+    }
+    console.log("switch:", checkbox.checked, stt, typeof (stt));
+}
+
+
+/**
+ * thay đổi trạng thái thiết bị khi click switch button
+ * @param {*} checkbox 
+ */
 function toggleStatus(checkbox) {
     let device = checkbox.parentNode.parentNode;
     checkbox.checked = !checkbox.checked
@@ -160,7 +164,7 @@ function toggleStatus(checkbox) {
         "data": JSON.stringify({
             topic: topic,
             id: device.getAttribute('deviceid'),
-            stt: Number(!checkbox.checked) 
+            stt: Number(!checkbox.checked)
         }),
         "success": data => {
             // toggleSwitch();
