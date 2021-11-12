@@ -52,7 +52,7 @@
                             <div class="device-name"><%- d.name -%></div>
                             <div class="status-text"><% if(d.status){ %>ON<% } else { %>OFF<% } %></div>
                             <label class="switch">
-                                <input type="checkbox" id="device-<%= d.id %>" <% if(d.status=='on'){ %>checked<% } %> onclick="toggleStatus(this)">
+                                <input type="checkbox" id="device-<%= d.id %>" <% if(d.status){ %>checked<% } %> onclick="toggleStatus(this)">
                                 <span class="slider round"></span>
                             </label>
                         </div>
