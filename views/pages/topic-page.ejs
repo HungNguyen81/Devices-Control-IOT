@@ -14,7 +14,8 @@
             integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO"
             crossorigin="anonymous"></script>
         <script>
-            const socket = io("https://scs-smart-control-system.herokuapp.com/"); //http://localhost:8080/");
+            // const socket = io("https://scs-smart-control-system.herokuapp.com/"); //http://localhost:8080/");
+            const socket = io(window.location.host);
         </script>
         
 </head>
