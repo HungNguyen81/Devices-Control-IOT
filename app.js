@@ -152,8 +152,8 @@ app.post("/devices", async (req, res) => {
 
     let topic = req.body.topic;
     let deviceId = req.body.id;
-    let email = req.session.User;
-    let stt = null;
+    // let email = req.session.User;
+    let stt = req.body.stt;
 
 
     try {
