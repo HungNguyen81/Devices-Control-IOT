@@ -49,7 +49,7 @@ window.addEventListener('load', function () {
     tempChart = new Highcharts.Chart({
         chart: {
             renderTo: 'temp',
-            defaultSeriesType: 'spline',
+            defaultSeriesType: 'line',
             // line, spline, line, spline, area, areaspline, column, bar, pie, scatter, gauge, arearange, areasplinerange and columnrange
             events: {
                 load: getTempDataFromSocket
@@ -80,7 +80,7 @@ window.addEventListener('load', function () {
     humidChart = new Highcharts.Chart({
         chart: {
             renderTo: 'humid',
-            defaultSeriesType: 'areaspline',
+            defaultSeriesType: 'area',
             // line, spline, line, spline, area, areaspline, column, bar, pie, scatter, gauge, arearange, areasplinerange and columnrange
             events: {
                 load: getHumidDataFromSocket
