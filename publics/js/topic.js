@@ -117,8 +117,9 @@ function toggleSwitch(checkbox, stt) {
 
     device.classList.toggle('active');
     // if(stt != undefined){
-        checkbox.checked = stt;
+        checkbox.checked = Boolean(stt);
         statusText.innerText = stt? 'ON':'OFF';
+        console.log("switch:", checkbox.checked, stt);
     // } 
     // else {
     //     if (checkbox.checked) {
