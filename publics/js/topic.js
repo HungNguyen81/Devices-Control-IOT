@@ -49,7 +49,7 @@ window.addEventListener('load', function () {
     tempChart = new Highcharts.Chart({
         chart: {
             renderTo: 'temp',
-            defaultSeriesType: 'line',
+            defaultSeriesType: 'spline',
             // line, spline, line, spline, area, areaspline, column, bar, pie, scatter, gauge, arearange, areasplinerange and columnrange
             events: {
                 load: getTempDataFromSocket
