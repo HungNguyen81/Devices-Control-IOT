@@ -173,6 +173,8 @@ app.post("/devices", async (req, res) => {
   }
 });
 
+
+const ON = 1, OFF = 0;
 async function updateDeviceStatus(email, topic, deviceId) {
   const user = await User.findOne({ email: email });
 
@@ -183,7 +185,7 @@ async function updateDeviceStatus(email, topic, deviceId) {
     if (t.name == topic) {
       stt = t.devices[deviceId - 1].status;
       console.log(stt);
-      stt = (stt == "on") ? "off" : "on";
+      stt = (stt == ON) ? OFF : ON;
       t.devices[deviceId - 1].status = stt;
     }
     newTopics.push(t);
