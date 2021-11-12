@@ -31,7 +31,9 @@
     text-decoration: none;
     color: black;
 }
-
+.topic *{
+    pointer-events: none;
+}
 .topic:hover{    
     transform: scale(1.05);
     transition: .4s;

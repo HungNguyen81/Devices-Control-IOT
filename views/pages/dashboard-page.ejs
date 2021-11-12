@@ -28,11 +28,11 @@
                 <% for(let topic of topics) { %>
                     <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>"
                         onclick="checkActive(event)">
-                        <div class="stt" onclick="clearClickEvent(event)"></div>
-                        <div class="name" onclick="clearClickEvent(event)">
+                        <div class="stt"></div>
+                        <div class="name">
                             <%- topic.displayName -%>
                         </div>
-                        <div class="data" onclick="clearClickEvent(event)">
+                        <div class="data">
                             <div class="temp">
                                 <i class="fas fa-thermometer-three-quarters"></i><span
                                     id="<%= topic.name %>/data/temp">--.--</span> °C
@@ -88,15 +88,6 @@
                 }
                 function resetStatus(topic) {
                     topic.classList.remove('active')
-                }
-
-                function checkActive(event) {
-                    if (!event.target.classList.contains('active')) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        alert('Khu vực này chưa được kết nối.')
-                        return;
-                    }
                 }
 
                 function clearClickEvent(e){
