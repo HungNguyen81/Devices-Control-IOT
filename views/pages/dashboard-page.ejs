@@ -27,11 +27,11 @@
                 <% for(let topic of topics) { %>
                     <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>"
                         onclick="checkActive(event)">
-                        <div class="stt"></div>
-                        <div class="name">
+                        <div class="stt" onclick="clearClickEvent(event)"></div>
+                        <div class="name" onclick="clearClickEvent(event)">
                             <%- topic.displayName -%>
                         </div>
-                        <div class="data">
+                        <div class="data" onclick="clearClickEvent(event)">
                             <div class="temp">
                                 <i class="fas fa-thermometer-three-quarters"></i><span
                                     id="<%= topic.name %>/data/temp">--.--</span> °C
@@ -96,6 +96,11 @@
                         alert('Khu vực này chưa được kết nối.')
                         return;
                     }
+                }
+
+                function clearClickEvent(e){
+                    e.preventDefault();
+                    return;
                 }
 
                 window.onload = getDataFromSocket;
