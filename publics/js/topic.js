@@ -111,16 +111,22 @@ window.addEventListener('load', function () {
 });
 
 
-function toggleSwitch(checkbox) {
+function toggleSwitch(checkbox, stt) {
     let device = checkbox.parentNode.parentNode;
     let statusText = device.children[2];
 
     device.classList.toggle('active');
-    if (checkbox.checked) {
-        statusText.innerText = 'ON';
+    if(stt){
+        checkbox.checked = stt;
+        statusText.innerText = stt? 'ON':'OFF';
     } else {
-        statusText.innerText = 'OFF';
+        if (checkbox.checked) {
+            statusText.innerText = 'ON';
+        } else {
+            statusText.innerText = 'OFF';
+        }
     }
+    
 }
 
 socket.on(`${topic}/ctrl`, data => {
@@ -129,8 +135,8 @@ socket.on(`${topic}/ctrl`, data => {
     
     // if(stt)
     //  checkbox.checked = !checkbox.checked;
-    checkbox.checked = stt;
-    toggleSwitch(checkbox);
+    // checkbox.checked = stt;
+    toggleSwitch(checkbox, stt);
     console.log(data);
 })
 
