@@ -158,7 +158,10 @@ app.post("/devices", async (req, res) => {
 
     try {
       stt = await updateDeviceStatus(email, topic, deviceId);
-      if (!stt) res.status(500).json({ msg: 'update failed' });
+      if (!stt){
+        res.status(500).json({ msg: 'update failed' });
+        console.log('update failed');
+      }
 
       client.publish(`${topic}`, `ctrl ${deviceId} ${stt}`);
       console.log(`ctrl ${deviceId} ${stt}`);
