@@ -153,7 +153,7 @@ function toggleStatus(checkbox) {
         "data": JSON.stringify({
             topic: topic,
             id: device.getAttribute('deviceid'),
-            stt: !checkbox.checked 
+            stt: Number(!checkbox.checked) 
         }),
         "success": data => {
             // toggleSwitch();
