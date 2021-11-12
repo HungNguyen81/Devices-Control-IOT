@@ -90,9 +90,13 @@
                     topic.classList.remove('active')
                 }
 
-                function clearClickEvent(e){
-                    e.preventDefault();
-                    return;
+                function checkActive(event) {
+                    if (!event.target.classList.contains('active')) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        alert('Khu vực này chưa được kết nối.')
+                        return;
+                    }
                 }
 
                 window.onload = getDataFromSocket;
