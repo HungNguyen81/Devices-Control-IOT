@@ -7,13 +7,13 @@
 #include <CertStoreBearSSL.h>
 #include "DHT.h"
 
-#define DHTPIN 12 // what digital pin(D6) we're connected to
+#define DHTPIN 0 // what digital pin(D3) we're connected to
 #define DHTTYPE DHT11 // DHT 11
 #define physics_button 1
 #define virtual_button 2
 // define the GPIO connected with Relays and Buttons
 const int NumOfRelays = 2;
-const int RelayPin[] = {5,4}; // D1, D2
+const int RelayPin[] = {14,12}; // D5, D6
 const int ButtonPin[] = {10,9}; // SD3, SD2
 bool RelayState[] = {1,1}; // //Define integer to remember the toggle state for relay 1, 2
 
