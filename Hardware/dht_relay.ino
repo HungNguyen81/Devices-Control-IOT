@@ -5,24 +5,26 @@
 #include <FS.h>
 #include <LittleFS.h>
 #include <CertStoreBearSSL.h>
-#include "DHT.h"
+#include <DHT.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
-#define DHTPIN 0 // what digital pin(D3) we're connected to
+#define DHTPIN 13 // what digital pin(D7) we're connected to DHT
 #define DHTTYPE DHT11 // DHT 11
 #define physics_button 1
 #define virtual_button 2
-// define the GPIO connected with Relays and Buttons
-const int NumOfRelays = 2;
-const int RelayPin[] = {14,12}; // D5, D6
-const int ButtonPin[] = {10,9}; // SD3, SD2
-bool RelayState[] = {1,1}; // //Define integer to remember the toggle state for relay 1, 2
+// define the GPIO connected with Relays
+const int NumOfRelays = 4;
+const int RelayPin[] = {14,12,10,9}; // D5, D6, SD3, SD2
+bool RelayState[] = {1,1,1,1}; // //Define integer to remember the toggle state for relay 1, 2, 3, 4 ( ON_0 / OFF_1 )
 
 int i=0;
+int state, old = 0;
 
 DHT dht(DHTPIN, DHTTYPE);
+LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-
-// Update these with values suitable for your network.
+// These values use for connecting home's wifi and hiveMQ
 const char* ssid = "Tony";
 const char* password = "buihuy0866689";
 const char* mqtt_server = "1af8e2f5e0ae40308432e82daf1071e0.s1.eu.hivemq.cloud";
@@ -84,7 +86,7 @@ void setDateTime() {
 }
 
 //Send all relays state to the server when connecting
-void resetServer() {
+void updateServer() {
     for(i=0; i<NumOfRelays; i++) {
       snprintf(relay_msg, MSG_BUFFER_SIZE, "ctrl %d %d", i+1, !RelayState[i]);
       client->publish("scs/home1", relay_msg);
@@ -119,17 +121,25 @@ void relayOnOff(int relay, int source) {
   }
 }
 
-// Control via buttons
-void PushButtons() {
-  for(i=0; i<NumOfRelays; i++) {
-    if(digitalRead(ButtonPin[i]) == LOW) {  //check if the button is pressed 
-      delay(400);
-      relayOnOff(i,physics_button);
-    }
-  }    
+// Control relays via physical buttons
+int PushButtons(int value) {
+  if (value < 100) return 0;
+  else if (value > 305 && value < 340) {
+    return 4;
+  } 
+  else if (value > 605 && value < 635) {
+    return 3;
+  } 
+  else if (value > 895 && value < 940) {
+    return 2;
+  } 
+  else if (value > 1015 && value < 1030) {
+    return 1;
+  }
+  else return 0;
 }
 
-// Control via wifi
+// Subscribe messages and Control relays via wifi
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
@@ -139,7 +149,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
 
-  // Switch on the relay if the first character is present
+  // Switch on/off the relay if receive a message 'ctrl'
   if ((char)payload[0] == 'c' && (char)payload[1] == 't' && (char)payload[2] == 'r' && (char)payload[3] == 'l') {
     for(i=0; i<NumOfRelays; i++) {
       char temp = i+1+'0';
@@ -182,13 +192,21 @@ void reconnect() {
 void setup() {
   delay(500);
   // When opening the Serial Monitor, select 9600 Baud
-  Serial.begin(9600);
+  Serial.begin(115200);
   delay(500);
+  
+  lcd.init();                      // initialize the lcd 
+  lcd.backlight();
 
   LittleFS.begin();
   setup_wifi();
   setDateTime();
-
+  
+  lcd.setCursor(0,0);
+  lcd.print("Connecting to ");
+  lcd.setCursor(0,1);
+  lcd.print(ssid);
+  
 
   // you can use the insecure mode, when you want to avoid the certificates
   //espclient->setInsecure();
@@ -208,28 +226,43 @@ void setup() {
 
   client->setServer(mqtt_server, 8883);
   client->setCallback(callback);
-  dht.begin();
-
+  
+  dht.begin();  //initialize the DHT11 sensor
+  
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Loading data...");
+  
   for(i=0; i<NumOfRelays; i++) {
     pinMode(RelayPin[i], OUTPUT);
-    pinMode(ButtonPin[i], INPUT_PULLUP);
     digitalWrite(RelayPin[i], RelayState[i]); //During Starting all Relays should TURN OFF
   }
-  resetServer();   //send all relays state to the server when connecting
+  updateServer();   //send all relays state to the server when connecting
+  delay(5000);
 }
 
 void loop() {
   if (!client->connected()) {
     reconnect();
-    resetServer();   //send all relays state to the server when connecting
+    updateServer();   //send all relays state to the server when connecting
   }
   client->loop();
-  PushButtons();  //listen to the button's state
+  
+  int cur_analog = analogRead(A0);
+  state = PushButtons(cur_analog);    //listen to the button's state
+  if(state != old){
+    if(state != 0) {
+      Serial.print("Button: ");
+      Serial.println(state);
+      relayOnOff(state-1,physics_button);
+      delay(400);
+    }
+    old = state;
+  }
 
   unsigned long now = millis();
   if (now - lastMsg > 3000) {
     lastMsg = now;
-//    ++value;
 
     float h = dht.readHumidity();
     float t = dht.readTemperature();
@@ -238,8 +271,14 @@ void loop() {
       Serial.println("Failed to read from DHT sensor!");
       return;
     }
-    snprintf(t_msg, MSG_BUFFER_SIZE, "temp %f", t);
-    snprintf(h_msg, MSG_BUFFER_SIZE, "humid %f", h);
+    snprintf(t_msg, MSG_BUFFER_SIZE, "temp %.2f", t);
+    snprintf(h_msg, MSG_BUFFER_SIZE, "humid %.2f", h);
+
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print(t_msg);
+    lcd.setCursor(0,1);
+    lcd.print(h_msg);
     
     Serial.println("Publish message: ");
     Serial.print("                 ");
