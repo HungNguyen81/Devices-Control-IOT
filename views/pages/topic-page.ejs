@@ -24,8 +24,10 @@
     <%- include('../components/header', {isHideLoginBtn: false, isLoggin: true, name: name}) -%>
         <div class="topics-container">
             <!-- content -->
-
-            <h2><%- displayName -%></h2>
+            <div class="title">
+                <a href="/dashboard"><i class="fas fa-arrow-left"></i></a>
+                <h2><%- displayName -%></h2>
+            </div>
 
             <div class="temp-humid">
                 <div class="charts">

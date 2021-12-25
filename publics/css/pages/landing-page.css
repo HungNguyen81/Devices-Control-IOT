@@ -40,25 +40,26 @@ body {
         font-size: 30px !important;
         text-align: right;
         top: auto !important;
-        bottom: 152px;
+        bottom: 177px;
     }
     .cover-title-2 {
         text-align: right;
         font-size: 21px !important;
         top: auto !important;
         bottom: 110px !important;
+        padding-left: 19px;
     }
     .cover-title-3 {
-        top: 169px;
+        top: 137px;
         text-align: right;
         line-height: 80px;
     }
     .btn-dashboard {
         top: auto !important;
-        bottom: 219px;
+        bottom: 30px;
     }
     .cover{
-    background-position-y: 0px;
-    background-position-x: -60px;
+        background-position-y: 0px;
+        background-position-x: -60px;
     }
 }

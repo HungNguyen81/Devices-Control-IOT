@@ -18,7 +18,7 @@ function getTempDataFromSocket() {
         let [date, value] = data;
         let point = [new Date(date).getTime(), Number(value)];
         let series = tempChart.series[0],
-            shift = series.data.length > 20; // shift if the series is longer than 20
+            shift = series.data.length > 5; // shift if the series is longer than 20
 
         // add the point
         tempChart.series[0].addPoint(point, true, shift);
@@ -31,8 +31,8 @@ function getHumidDataFromSocket() {
         let [date, value] = data;
         let point = [new Date(date).getTime(), Number(value)];
         let series = humidChart.series[0],
-            shift = series.data.length > 20; // shift if the series is longer than 20
-
+            shift = series.data.length > 5; // shift if the series is longer than 20
+        
         // add the point
         humidChart.series[0].addPoint(point, true, shift);
         document.querySelector('#humid-data').innerText = Math.round(value * 100) / 100;

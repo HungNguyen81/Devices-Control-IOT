@@ -129,6 +129,7 @@
     .login-form {
         width: calc(100% - 40px);
         transform: translate(0, 28px);
+        padding: 20px;
     }
     .login-form .btn-form-submit {
         font-size: 19px;
@@ -138,6 +139,12 @@
         height: 100vh;
     }
     .header .header-title{
-        visibility: visible;
+        visibility: hidden;
+    }
+    .login-form h2{
+        text-align: center;
+        transform: translate(0,-36px);
+        white-space: nowrap;
+        font-size: 25px;
     }
 }

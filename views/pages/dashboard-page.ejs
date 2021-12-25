@@ -23,7 +23,10 @@
 
         <!-- content -->
         <div class="topics-container">
-            <h2>DASHBOARD</h2>
+            <div class="title">
+                <a href="/"><i class="fas fa-home"></i></a>
+                <h2 style="display: inline;">DASHBOARD</h2>
+            </div>
             <div class="topics">
                 <% for(let topic of topics) { %>
                     <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>">
