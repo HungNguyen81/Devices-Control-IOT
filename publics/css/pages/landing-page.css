@@ -7,7 +7,7 @@ body {
     width: 100%;
     height: 100%;
     z-index: 0;
-    background-image: url('../../images/cover.jpg');
+    background-image: url('../../images/bg15.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position-y: -60px;
@@ -49,8 +49,9 @@ body {
         bottom: 110px !important;
     }
     .cover-title-3 {
-        top: auto;
-        bottom: 33px;
+        top: 169px;
+        text-align: right;
+        line-height: 80px;
     }
     .btn-dashboard {
         top: auto !important;

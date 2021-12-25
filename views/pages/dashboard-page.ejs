@@ -26,8 +26,7 @@
             <h2>DASHBOARD</h2>
             <div class="topics">
                 <% for(let topic of topics) { %>
-                    <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>"
-                        onclick="checkActive(event)">
+                    <a href="/devices?t=<%= topic.name %>" class="topic" id="<%= topic.name %>">
                         <div class="stt"></div>
                         <div class="name">
                             <%- topic.displayName -%>
@@ -88,15 +87,6 @@
                 }
                 function resetStatus(topic) {
                     topic.classList.remove('active')
-                }
-
-                function checkActive(event) {
-                    if (!event.target.classList.contains('active')) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        alert('Khu vực này chưa được kết nối.')
-                        return;
-                    }
                 }
 
                 window.onload = getDataFromSocket;
