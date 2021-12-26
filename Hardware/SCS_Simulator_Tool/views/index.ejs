@@ -1,0 +1,184 @@
+<html>
+
+<head>
+    <title>SCS Simulator</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">SCS Simulator</div>
+        <div class="form-container">
+            <div class="form">
+                <h4>Topic</h4>
+                <div class="topic">
+                    /scs/ <input type="text" id="topic" value="home2">
+                </div>
+                <hr>
+                <h4>Temperature and Humidity Range:</h4>
+                <div class="temp-range">
+                    From:<input type="number" min="20" max="50" value="27.05" id="min-temp">
+                    <p class="label">°C</p>
+                    To:<input type="number" min="20" max="90" value="28" id="max-temp">
+                    <p class="label">°C</p>
+                </div>
+                <div class="humid-range">
+                    From:<input type="number" min="20" max="50" value="89.80" id="min-humid">
+                    <p class="label">%</p>
+                    To:<input type="number" min="20" max="50" value="89.91" id="max-humid">
+                    <p class="label">%</p>
+                </div>
+                <h4>Data sending cycle:</h4>
+                <div class="cycle">
+                    <input type="number" min="1" max="120" value="2" id="cycle" onchange="cycleChange(this)">
+                    <p class="label">(seconds)</p>
+                </div>
+                <hr>
+                <h4>Control panel:</h4>
+                <div class="control">
+                    <div class="devices">
+                        <% if(devices){ %>
+                            <% for(let d of devices){ %>
+                                <div class="device<% if(d.status){ %> active<%}%>" deviceid="<%= d.id %>">
+                                    <div class="status"></div>
+                                    <div class="device-name">
+                                        <%- d.name -%>
+                                    </div>
+                                    <div class="status-text">
+                                        <% if(d.status){ %>ON<% } else { %>OFF<% } %>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="device-<%= d.id %>" <% if(d.status){ %>checked<% } %>
+                                            onclick="toggleStatus(this, <%= d.id %>)">
+                                                <span class="slider round"></span>
+                                    </label>
+                                </div>
+                                <% } %>
+                                    <% } else { %>
+                                        <div class="device">
+                                            <div class="status"></div>
+                                            <div class="device-name">Không có thiết bị nào</div>
+                                        </div>
+                                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="preview">
+                <!-- <p><b>Data to send:</b></p> -->
+                <div class="display" id="disp">
+
+                </div>
+            </div>
+            <div class="clear-btn disable" onclick="clearConsole(this)">CLEAR CONSOLE</div>
+            <div class="start-stop-btn" onclick="startStop(this)">
+                START SEND DATA
+            </div>
+        </div>
+    </div>
+    <script>
+        var start = false
+        var interval = null
+        var data = null
+
+        function cycleChange(cycle) {
+            clearInterval(interval)
+            interval = setInterval(sendData, 1000 * cycle.value)
+        }
+        function startStop(e) {
+            e.innerText = start ? 'START SEND DATA' : 'STOP SEND DATA'
+            e.classList.toggle('running')
+            start = !start
+
+            console.log(start);
+
+            if (!start) {
+                clearInterval(interval)
+                displayMsg('<i style="color: #dd5d07">Stop sending messages</i>')
+            } else {
+                sendData()
+                interval = setInterval(sendData, 1000 * Number(document.querySelector('#cycle').value))
+                displayMsg('<i style="color: yellow">Start sending messages</i>')
+            }
+        }
+        function sendData() {
+            $.ajax({
+                "url": '/start',
+                "method": 'POST',
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    topic: document.querySelector('#topic').value,
+                    minTemp: Number(document.querySelector('#min-temp').value),
+                    maxTemp: Number(document.querySelector('#max-temp').value),
+                    minHumi: Number(document.querySelector('#min-humid').value),
+                    maxHumi: Number(document.querySelector('#max-humid').value)
+                }),
+                "success": m => {
+                    // displayMsg(`<p><b>Message</b>:  temp ${data}`);
+                    displayMsg(`<b style="color: #FFB13C">Data</b>:  ${m.msg[0]}`);
+                    displayMsg(`<b style="color: #24b829">Data</b>:  ${m.msg[1]}`);
+                    // console.log(data);
+                },
+                "error": (xhr, status, error) => {
+                    console.log(xhr, status, error);
+                }
+            });
+        }
+
+        function clearConsole(btn) {
+            document.querySelector('#disp').innerHTML = ''
+            btn.classList.toggle('disable')
+        }
+
+        function displayMsg(msg) {
+            let disp = document.querySelector('#disp');
+            let clearBtn = document.querySelector('.clear-btn')
+            clearBtn.classList.remove('disable')
+
+            if(disp.children.length > 13){
+                disp.removeChild(disp.children[0])
+            }
+
+            disp.innerHTML += `<p>${msg}</p>`
+            disp.scrollTop = disp.scrollHeight;
+        }
+
+        function toggleStatus(checkbox, id) {
+            stt = checkbox.checked;
+            let device = checkbox.parentNode.parentNode;
+            let statusText = device.children[2];
+            statusText.innerText = stt ? 'ON' : 'OFF';
+            displayMsg(`<b style="color: #dd66b6">Control</b>:  ctrl ${id} ${Number(stt)}`);
+
+            $.ajax({
+                "url": '/control',
+                "method": 'POST',
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    topic: document.querySelector('#topic').value,
+                    id: id,
+                    stt: Number(stt)
+                }),
+                "success": m => {
+                    
+                    // console.log(data);
+                },
+                "error": (xhr, status, error) => {
+                    console.log(xhr, status, error);
+                }
+            });
+
+            if (stt) {
+                device.classList.add('active')
+            } else {
+                device.classList.remove('active')
+            }
+        }
+    </script>
+</body>
+
+</html>

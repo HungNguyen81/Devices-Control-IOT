@@ -1,0 +1,92 @@
+<html>
+
+<head>
+    <title>SCS Simulator</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">SCS Simulator</div>
+        <div class="form-container">
+            <div class="form">
+                <h4>Topic</h4>
+                <div class="topic">
+                    /scs/ <input type="text" id="topic">
+                </div>
+                <hr>
+                <h4>Temperature Range:</h4>
+                <div class="temp-range">
+                    From:<input type="number" min="20" max="50" value="27.05" id="min-temp">
+                    <p class="label">°C</p>
+                    To:<input type="number" min="20" max="90" value="28" id="max-temp">
+                    <p class="label">°C</p>
+                </div>
+                <div class="humid-range">
+                    From:<input type="number" min="20" max="50" value="89.80" id="min-humid">
+                    <p class="label">%</p>
+                    To:<input type="number" min="20" max="50" value="89.91" id="max-humid">
+                    <p class="label">%</p>
+                </div>
+                <h4>Data sending cycle:</h4>
+                <div class="cycle">
+                    <input type="number" min="2" max="120" value="2" id="cycle">
+                    <p class="label">(seconds)</p>
+                </div>
+                <hr>
+                <h4>Control panel:</h4>
+                <div class="control">
+                    <div class="devices">
+                        <% if(devices){ %>
+                            <% for(let d of devices){ %>
+                                <div class="device<% if(d.status){ %> active<%}%>" deviceid="<%= d.id %>">
+                                    <div class="status"></div>
+                                    <div class="device-name"><%- d.name -%></div>
+                                    <div class="status-text"><% if(d.status){ %>ON<% } else { %>OFF<% } %></div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="device-<%= d.id %>" <% if(d.status){ %>checked<% } %> onclick="toggleStatus(this)">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            <% } %>
+                        <% } else { %>
+                            <div class="device">
+                                <div class="status"></div>
+                                <div class="device-name">Không có thiết bị nào</div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="preview">
+                <div class="display">
+                    <p>Test</p>
+                    <p>Test</p>
+                    <p>Test</p>
+                </div>
+            </div>
+            <div class="start-stop-btn">
+                START
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleSwitch(checkbox) {
+            let stt = !checkbox.checked;
+            let device = checkbox.parentNode.parentNode;
+            let statusText = device.children[2];
+
+            // checkbox.checked = stt;
+            statusText.innerText = stt ? 'ON' : 'OFF';
+            if (stt) {
+                device.classList.add('active')
+            } else {
+                device.classList.remove('active')
+            }
+            // console.log("switch:", checkbox.checked, stt, typeof (stt));
+        }
+
+    </script>
+</body>
+
+</html>
