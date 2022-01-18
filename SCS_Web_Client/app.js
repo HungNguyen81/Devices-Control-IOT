@@ -165,7 +165,7 @@ app.post("/devices", async (req, res) => {
     let stt       = req.body.stt;
 
     try {
-      stt = await updateDeviceStatus(email, topic, deviceId);
+      // stt = await updateDeviceStatus(email, topic, deviceId);
 
       client.publish(`${topic}`, `ctrl ${deviceId} ${stt}`);
       console.log(`ctrl ${deviceId} ${stt}`);
@@ -275,7 +275,7 @@ function setUpCallbacksMqtt(client, email) {
       let keyword = arr[0]; // temp, humid, ctrl
       let value = arr[1];
       let stt = arr[2];
-      if (topic == 'scs/home2' && stt) console.log("from client", client.clientId, stt, message.toString());
+      // if (topic == 'scs/home2' && stt) console.log("from client", client.clientId, stt, message.toString());
       try {
         socketId.forEach(id => {
           // console.log('to:', id);
@@ -286,7 +286,7 @@ function setUpCallbacksMqtt(client, email) {
 
       }
       if (keyword == 'ctrl') {
-        // await updateDeviceStatus(email, topic, value);
+        await updateDeviceStatus(email, topic, value);
       }
     });
   } catch (e) {
