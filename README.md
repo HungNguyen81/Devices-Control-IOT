@@ -5,3 +5,13 @@
 - B3: chạy lệnh **npm i** để cài đặt các gói cần thiết
 - B4: chạy lệnh: **npm start** cho project
 - B5: mở 2 project SCS_Hardware/SCS_Simulator_Tool và làm tương tự B2-3
+
+# Ảnh chụp màn hình ngày 18/01/2022
+
+[!alt]('https://github.com/HungNguyen81/Devices-Control-IOT/blob/main/img/scs0.jpeg?raw=true')
+
+[!alt]('https://github.com/HungNguyen81/Devices-Control-IOT/blob/main/img/scs1.jpeg?raw=true')
+
+[!alt]('https://github.com/HungNguyen81/Devices-Control-IOT/blob/main/img/scs2.jpeg?raw=true')
+
+[!alt]('https://github.com/HungNguyen81/Devices-Control-IOT/blob/main/img/scs3.jpeg?raw=true')
