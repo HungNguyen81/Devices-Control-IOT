@@ -28,8 +28,24 @@
         <!-- content -->
 
         <h2>Biệt thự Đà Lạt</h2>
-
+        <div class="warning">
+            Không có dữ liệu để hiển thị!
+        </div>
         <div class="temp-humid">
+            <style>
+                .warning{
+                    position: absolute;
+                    width: 100%;
+                    height: 200px;
+                    background-color: rgba(0, 0, 0, 0.562);
+                    color: #fff;
+                    font-size: 200%;
+                    top: 290px;
+                    z-index: 100;
+                    text-align: center;
+                    line-height: 200px;
+                }
+            </style>
             <div class="charts">
                 <div class="chart-temp" id="temp"></div>
                 <div class="chart-humid" id="humid"></div>

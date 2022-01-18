@@ -74,7 +74,7 @@
     flex-direction: column;
     padding-top: 50px;
     box-sizing: border-box;
-    box-shadow: 4px 4px 10px #888888;
+    /* box-shadow: 4px 4px 10px #888888; */
     border-radius: 10px;
 }
 
@@ -85,6 +85,34 @@
     padding: 20px 50px;
     line-height: 40px;
     white-space: nowrap;
+}
+
+.warning{
+    position: absolute;
+    width: 100%;
+    height: 480px;
+    background-color: rgba(0, 0, 0, 0.678);
+    color: #fff;
+    font-size: 200%;
+    font-weight: bold;
+    top: 190px;
+    z-index: 100;
+    text-align: center;
+    line-height: 480px;
+    user-select: none;
+}
+.hidden{
+    display: none;
+}
+
+.warning p{
+    position: absolute;
+    font-size: 70%;
+    line-height: normal;
+    transform: translate(0, -200px);
+    width: 100%;
+    color: rgb(189, 189, 189);
+    text-align: center;
 }
 
 .current-data i {
@@ -250,6 +278,15 @@ input:checked+.slider:before {
         height: 40px;
         padding: 5px 50px 20px 50px;
     }
+
+    .warning{
+        height: 800px;
+        line-height: 800px;
+    }
+    .warning p{
+        transform: translate(0, -350px);
+    }
+
     .charts {
         width: 100%;
     }

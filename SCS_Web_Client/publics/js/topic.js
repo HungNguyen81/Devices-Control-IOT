@@ -10,19 +10,43 @@ function getParameterByName(name, url = window.location.href) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-
+// Hiện thị cảnh báo không có dữ liệu khi sensor không hoạt động
 let topic = getParameterByName('t');
+let dataTimeout;
+let warn = document.querySelector('.warning');
+
+let removeWarning = () => {
+    warn.classList.add('hidden');
+    clearTimeout(dataTimeout);
+}
+let addWarning = () => {
+    warn.classList.remove('hidden');
+}
+
+addWarning();
+
+var container = document.getElementById('container');
+var hw = new Widget.Humidity(container, 0, 100, 10);
+hw.draw();
+
+var container2 = document.getElementById('container2');
+var tw = new Widget.Termometer(container2, 0, 100);
+tw.draw();
 
 function getTempDataFromSocket() {
     socket.on(`${topic}/data/temp`, data => {
         let [date, value] = data;
         let point = [new Date(date).getTime(), Number(value)];
         let series = tempChart.series[0],
-            shift = series.data.length > 5; // shift if the series is longer than 20
+            shift = series.data.length > 5; // shift if the series is longer than 5
 
         // add the point
         tempChart.series[0].addPoint(point, true, shift);
-        document.querySelector(`#temp-data`).innerText = Math.round(value * 100) / 100;
+        // document.querySelector(`#temp-data`).innerText = Math.round(value * 100) / 100;
+        tw.setTemperature(Number(value));
+        
+        removeWarning();
+        dataTimeout = setTimeout(addWarning, 6000);
     });
 }
 
@@ -31,11 +55,12 @@ function getHumidDataFromSocket() {
         let [date, value] = data;
         let point = [new Date(date).getTime(), Number(value)];
         let series = humidChart.series[0],
-            shift = series.data.length > 5; // shift if the series is longer than 20
-        
+            shift = series.data.length > 5; // shift if the series is longer than 5
+
         // add the point
         humidChart.series[0].addPoint(point, true, shift);
-        document.querySelector('#humid-data').innerText = Math.round(value * 100) / 100;
+        // document.querySelector('#humid-data').innerText = Math.round(value * 100) / 100;
+        hw.setHumidity(Number(value));
     });
 }
 //#endregion

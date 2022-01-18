@@ -2,12 +2,14 @@
 <html>
 
 <head>
-    <%- include('../partials/head', {title: 'SCS - Devices'}); -%>
+    <%- include('../partials/head', {title: 'SCS - Devices' }); -%>
         <link rel="stylesheet" href="/css/components/header.css">
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
         <link rel="stylesheet" href="/css/pages/topic-page.css">
-        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+            integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+            crossorigin="anonymous" />
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
@@ -17,7 +19,8 @@
             // const socket = io("https://scs-smart-control-system.herokuapp.com/"); //http://localhost:8080/");
             const socket = io(window.location.host);
         </script>
-        
+        <script type="text/javascript" src="/js/iot-widget.min.js"></script>
+
 </head>
 
 <body>
@@ -26,7 +29,14 @@
             <!-- content -->
             <div class="title">
                 <a href="/dashboard"><i class="fas fa-arrow-left"></i></a>
-                <h2><%- displayName -%></h2>
+                <h2>
+                    <%- displayName -%>
+                </h2>
+            </div>
+
+            <div class="warning hidden">
+                Không có dữ liệu để hiển thị!
+                <p>Vui lòng kiểm tra kết nối với cảm biến</p>
             </div>
 
             <div class="temp-humid">
@@ -35,14 +45,20 @@
                     <div class="chart-humid" id="humid"></div>
                 </div>
                 <div class="current-data">
-                    <div class="temp-data">
+                    <style>
+                        
+                    </style>
+                    <!-- <div class="temp-data">
                         <i class="fas fa-thermometer-three-quarters"></i>
                         Nhiệt độ: <span id="temp-data"></span>°C
                     </div>
                     <div class="humid-data">
                         <i class="fas fa-tint"></i>
                         Độ ẩm: <span id="humid-data"></span>%
-                    </div>
+                    </div> -->
+                    <div id="container2"></div>
+                    <br /><br /><br />
+                    <div id="container"></div>
                 </div>
             </div>
 
@@ -51,20 +67,25 @@
                     <% for(let d of devices){ %>
                         <div class="device<% if(d.status){ %> active<%}%>" deviceid="<%= d.id %>">
                             <div class="status"></div>
-                            <div class="device-name"><%- d.name -%></div>
-                            <div class="status-text"><% if(d.status){ %>ON<% } else { %>OFF<% } %></div>
+                            <div class="device-name">
+                                <%- d.name -%>
+                            </div>
+                            <div class="status-text">
+                                <% if(d.status){ %>ON<% } else { %>OFF<% } %>
+                            </div>
                             <label class="switch">
-                                <input type="checkbox" id="device-<%= d.id %>" <% if(d.status){ %>checked<% } %> onclick="toggleStatus(this)">
-                                <span class="slider round"></span>
+                                <input type="checkbox" id="device-<%= d.id %>" <% if(d.status){ %>checked<% } %>
+                                    onclick="toggleStatus(this)">
+                                    <span class="slider round"></span>
                             </label>
                         </div>
-                    <% } %>
-                <% } else { %>
-                    <div class="device">
-                        <div class="status"></div>
-                        <div class="device-name">Không có thiết bị nào</div>
-                    </div>
-                <% } %>
+                        <% } %>
+                            <% } else { %>
+                                <div class="device">
+                                    <div class="status"></div>
+                                    <div class="device-name">Không có thiết bị nào</div>
+                                </div>
+                                <% } %>
             </div>
 
         </div>

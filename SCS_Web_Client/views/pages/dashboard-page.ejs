@@ -82,14 +82,11 @@
                     topic.classList.add('active');
 
                     let tmp = setTimeout(() => {
-                        resetStatus(topic);
+                        topic.classList.remove('active')
                         document.getElementById(`${id}/data/temp`).innerText = '--.--';
                         document.getElementById(`${id}/data/humid`).innerText = '--.--';
-                    }, 5000);
+                    }, 6000);
                     mapTimeout.set(id, tmp);
-                }
-                function resetStatus(topic) {
-                    topic.classList.remove('active')
                 }
 
                 window.onload = getDataFromSocket;
