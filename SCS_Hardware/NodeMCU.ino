@@ -339,7 +339,7 @@ void setup() {
     pinMode(RelayPin[i], OUTPUT);
     digitalWrite(RelayPin[i], RelayState[i]); //During Starting all Relays should TURN OFF
   }
-  updateServer();   //send all relays state to the server when connecting
+  // updateServer();   //send all relays state to the server when connecting
   delay(5000);
 }
 
