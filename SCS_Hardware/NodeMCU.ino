@@ -15,7 +15,10 @@
 // define the GPIO connected with Relays
 const int NumOfRelays = 4;
 const int RelayPin[] = {14,12,10,9}; // D5, D6, SD3, SD2
-bool RelayState[] = {1,1,1,1}; // //Define integer to remember the toggle state for relay 1, 2, 3, 4 ( ON_0 / OFF_1 )
+
+# define ON 0
+# define OFF 1
+bool RelayState[] = {OFF,OFF,OFF,OFF}; // //Define integer to remember the toggle state for relay 1, 2, 3, 4 ( ON_0 / OFF_1 )
 
 int i=0;
 int state, old = 0;
@@ -165,7 +168,7 @@ void updateServer() {
 
 // Turn relay ON/OFF
 void relayOnOff(int relay, int source) {
-  if(RelayState[relay] == 1) {
+  if(RelayState[relay] == OFF) {
     digitalWrite(RelayPin[relay], LOW);     //turn the relay on
     snprintf(relay_msg, MSG_BUFFER_SIZE, "ctrl %d 1", relay+1);
     if(source == physics_button) {
@@ -174,7 +177,7 @@ void relayOnOff(int relay, int source) {
       Serial.print("] \n");
       client->publish("scs/home1", relay_msg);
     }
-    RelayState[relay] = 0;
+    RelayState[relay] = ON;
     Serial.printf("Device %d ON\n",relay+1);   
   }
   else {
@@ -186,7 +189,7 @@ void relayOnOff(int relay, int source) {
       Serial.print("] \n");
       client->publish("scs/home1", relay_msg);
     }
-    RelayState[relay] = 1;
+    RelayState[relay] = OFF;
     Serial.printf("Device %d OFF\n",relay+1);
   }
 }
@@ -194,13 +197,13 @@ void relayOnOff(int relay, int source) {
 // Control relays via physical buttons
 int PushButtons(int analog_val) {
   if (analog_val < 100) return 0;
-  else if (analog_val > 305 && analog_val < 340) {
+  else if (analog_val > 310 && analog_val < 354) {
     return 4;
   } 
-  else if (analog_val > 605 && analog_val < 635) {
+  else if (analog_val > 610 && analog_val < 640) {
     return 3;
   } 
-  else if (analog_val > 895 && analog_val < 940) {
+  else if (analog_val > 890 && analog_val < 940) {
     return 2;
   } 
   else if (analog_val > 1015 && analog_val < 1030) {
@@ -254,7 +257,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     for(i=0; i<NumOfRelays; i++) {
       char tmp = i+1+'0';
       if((char)payload[5] == tmp) {  //the position of the controlled relay
-        if(((char)payload[7] == '1') ^ (RelayState[i] == 0)) {
+        if(((char)payload[7] == '1') ^ (RelayState[i] == ON)) {
           relayOnOff(i,virtual_button);
           return;
         }
@@ -276,6 +279,9 @@ void reconnect() {
     // Insert your password
     if (client->connect(clientId.c_str(), "scs-home1", "SCS-home1")) {
       Serial.println("connected");
+      // Once connected, publish an announcement…
+//      client->publish("scs/home1/", "hello world");
+      // … and resubscribe
       client->subscribe("scs/home1");
       
     } else {
@@ -339,7 +345,7 @@ void setup() {
     pinMode(RelayPin[i], OUTPUT);
     digitalWrite(RelayPin[i], RelayState[i]); //During Starting all Relays should TURN OFF
   }
-  // updateServer();   //send all relays state to the server when connecting
+  updateServer();   //send all relays state to the server when connecting
   delay(5000);
 }
 
