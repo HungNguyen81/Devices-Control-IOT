@@ -69,7 +69,7 @@ app.post("/login", async (req, res) => {
   if (user && password == user.password) {
     // set session
     req.session.User = user.email;
-    req.session.Name = user.name; // têN người dùng
+    req.session.Name = user.name; // tên người dùng
 
     email = mqttOptions.username = user.mqtt_user;
     mqttOptions.password = user.mqtt_pass;
@@ -165,8 +165,6 @@ app.post("/devices", async (req, res) => {
     let stt       = req.body.stt;
 
     try {
-      // stt = await updateDeviceStatus(email, topic, deviceId);
-
       client.publish(`${topic}`, `ctrl ${deviceId} ${stt}`);
       console.log(`ctrl ${deviceId} ${stt}`);
     } catch (e) {
@@ -206,15 +204,15 @@ const ON = 1, OFF = 0;
  * @param {*} deviceId 
  * @returns 
  */
-async function updateDeviceStatus(email, topic, deviceId) {
-  const user    = await User.findOne({ email: email });
-  let topics    = user.topics, stt;
+async function updateDeviceStatus(email, topic, deviceId, stt) {
+  const user    = await User.findOne({ email: email })
+  let topics    = user.topics
   let newTopics = new Array()
 
   topics.forEach((t) => {
     if (t.name == topic) {
-      stt = t.devices[deviceId - 1].status;
-      stt = (stt == ON) ? OFF : ON;
+      // stt = t.devices[deviceId - 1].status;
+      // stt = (stt == ON) ? OFF : ON;
       t.devices[deviceId - 1].status = stt;
     }
     newTopics.push(t);
@@ -275,10 +273,9 @@ function setUpCallbacksMqtt(client, email) {
       let keyword = arr[0]; // temp, humid, ctrl
       let value = arr[1];
       let stt = arr[2];
-      // if (topic == 'scs/home2' && stt) console.log("from client", client.clientId, stt, message.toString());
+
       try {
         socketId.forEach(id => {
-          // console.log('to:', id);
           io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt]);
         });
 
