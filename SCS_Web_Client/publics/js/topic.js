@@ -1,5 +1,6 @@
 let tempChart, humidChart;
 var isActive = false;
+var isUpdated = false;
 
 //#region SET UP DATA FOR LIVE-DATA CHARTS
 function getParameterByName(name, url = window.location.href) {
@@ -27,6 +28,11 @@ let addWarning = () => {
 }
 
 addWarning();
+
+socket.on(`${topic}/updated`, data => {
+    console.log('updated');
+    document.querySelector('#loading').classList.add('hidden')
+})
 
 var container = document.getElementById('container');
 var hw = new Widget.Humidity(container, 0, 100, 10);
@@ -182,8 +188,8 @@ function toggleSwitch(checkbox, stt) {
 function toggleStatus(checkbox) {
     checkbox.checked = !checkbox.checked
     
-    if(!isActive){
-        alert('Thiết bị kết nối KHÔNG hoạt động. Vui lòng kiểm tra.')
+    if(!isActive || !isUpdated){
+        alert('Thiết bị của bạn chưa sẵn sàng, vui lòng kiểm tra.')
         return
     }
     let device = checkbox.parentNode.parentNode;    

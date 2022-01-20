@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
             integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
             crossorigin="anonymous" />
-            <link rel="stylesheet" href="/css/dark-theme.css">
+        <link rel="stylesheet" href="/css/dark-theme.css">
         <link rel="stylesheet" href="/css/pages/topic-page-dark.css">
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -22,7 +22,7 @@
             const socket = io(window.location.host);
         </script>
         <script type="text/javascript" src="/js/iot-widget.min.js"></script>
-        
+
 </head>
 
 <body>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="current-data">
                     <style>
-                        
+
                     </style>
                     <!-- <div class="temp-data">
                         <i class="fas fa-thermometer-three-quarters"></i>
@@ -64,7 +64,9 @@
                     <div id="container"></div>
                 </div>
             </div>
-
+            <div id="loading">
+                <div id="loader"></div>
+            </div>
             <div class="devices">
                 <% if(devices){ %>
                     <% for(let d of devices){ %>
@@ -90,7 +92,7 @@
                                 </div>
                                 <% } %>
             </div>
-
+            
         </div>
         <%- include('../components/footer') -%>
             <script src="/js/topic.js"></script>

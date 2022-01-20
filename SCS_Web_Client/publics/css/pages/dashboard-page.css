@@ -138,4 +138,13 @@
     .header p {
         right: 160px;
     }
+    
+    .dark-theme-btn{
+        transform: translate(30px, -2px);
+    }
+
+    .title a{
+        transform: translate(-60px, -1px);
+    }
 }
+

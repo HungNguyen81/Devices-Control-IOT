@@ -36,7 +36,7 @@
     display:inline-block;
     width: 34px;    
     height: 34px;
-    border: 2px solid #6C6C84;
+    /* border: 2px solid #6C6C84; */
     border-radius: 50%;
 }
 .dark-theme-btn.dark{
@@ -55,9 +55,19 @@
     .btn-login{
         right: 33px !important;
     }
+    
 }
 @media only screen and (max-width: 600px){
     .hidden{
         visibility: hidden;
+    }
+    .header-title{
+        visibility: hidden !important;
+    }
+    .header .logo{
+        visibility: hidden;
+    }
+    .header p {
+        right: 160px;
     }
 }

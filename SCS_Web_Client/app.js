@@ -201,6 +201,8 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("socket", socket.id, "disconnected");
+    
+    // xoa socketid khoi mang
     socketId.splice(socketId.indexOf(socket.id), 1);
   });
 });
@@ -266,7 +268,6 @@ function setUpCallbacksMqtt(client, email) {
   //setup the callbacks
   client.on("connect", () => {
     console.log("MQTT Connected");
-    // client->
   });
 
   client.on("error", (error) => {
@@ -285,24 +286,22 @@ function setUpCallbacksMqtt(client, email) {
       let value = arr[1];
       let stt = Number(arr[2] == NaN ? 0 : arr[2]);
 
-      if(keyword == 'updated'){
-        isUpdated = true;
-      }
-
       try {
         socketId.forEach(id => {
-          io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt]);
+          io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt])
         });
-
       } catch (err) {
-        console.err("no socket connection");
+        console.err("no socket connection")
       }
-      if (keyword == 'ctrl') {
-        await updateDeviceStatus(email, topic, value, stt);
+      
+      if(keyword == 'updated'){
+        isUpdated = true
+      } else if (keyword == 'ctrl') {
+        await updateDeviceStatus(email, topic, value, stt)
       }
     });
   } catch (e) {
-    console.err("MQTT Client connection failed");
+    console.err("MQTT Client connection failed")
   }
 }
 
