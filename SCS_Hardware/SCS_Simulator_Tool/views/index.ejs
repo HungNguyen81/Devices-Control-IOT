@@ -82,8 +82,9 @@
         var data = null
 
         function cycleChange(cycle) {
-            clearInterval(interval)
-            interval = setInterval(sendData, 1000 * cycle.value)
+            if(start)
+                clearInterval(interval)
+                interval = setInterval(sendData, 1000 * cycle.value)
         }
         function startStop(e) {
             e.innerText = start ? 'START SEND DATA' : 'STOP SEND DATA'
