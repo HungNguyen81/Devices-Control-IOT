@@ -158,6 +158,9 @@ void updateServer() {
       snprintf(relay_msg, MSG_BUFFER_SIZE, "ctrl %d %d", i+1, !RelayState[i]);
       client->publish("scs/home1", relay_msg);
     }
+
+    // Hưng coded this line
+    client->publish("scs/home1", "updated");
 } 
 
 // Turn relay ON/OFF
@@ -257,6 +260,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
         }
       }
     }
+  } else if((char)payload[0] == 'r'){
+    // Hưng update request 'r' msg
+    updateServer();
   }
 }
 
@@ -270,9 +276,6 @@ void reconnect() {
     // Insert your password
     if (client->connect(clientId.c_str(), "scs-home1", "SCS-home1")) {
       Serial.println("connected");
-      // Once connected, publish an announcement…
-//      client->publish("scs/home1/", "hello world");
-      // … and resubscribe
       client->subscribe("scs/home1");
       
     } else {
