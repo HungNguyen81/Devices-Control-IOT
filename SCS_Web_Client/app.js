@@ -5,6 +5,9 @@ const cors = require("cors");
 const mqtt = require("mqtt");
 const mongoose = require("mongoose");
 const { User } = require("./Models/User");
+// const cli = require("nodemon/lib/cli");
+
+var isUpdated = false;
 
 const app = express();
 const SESSION_TIME = 30 * 24 * 3600 * 1000; // 20 ngày live-time cho session
@@ -137,6 +140,8 @@ app.get("/devices", async (req, res) => {
       devices;
 
     client.subscribe(`${topic}`); // kênh điều khiển
+    client.publish(topic, 'r'); // yeu cau cap nhat trang thai 4 kenh relay
+    isUpdated = false;
 
     topics.forEach((t) => {
       if (t.name == topic) {
@@ -157,6 +162,12 @@ app.get("/devices", async (req, res) => {
 
 
 app.post("/devices", async (req, res) => {
+  // neu chua cap nhat xong trang thai relay
+  // if(!isUpdated){
+  //   res.status(400).end()
+  //   return
+  // }
+
   //update data trong database
   if (req.session.User) {
     let topic     = req.body.topic;
@@ -218,6 +229,7 @@ async function updateDeviceStatus(email, topic, deviceId, stt) {
     newTopics.push(t);
   });
 
+  console.log("CTRL:", topic, deviceId, stt);
   try {
     await User.updateOne(
       { email: email },
@@ -254,6 +266,7 @@ function setUpCallbacksMqtt(client, email) {
   //setup the callbacks
   client.on("connect", () => {
     console.log("MQTT Connected");
+    // client->
   });
 
   client.on("error", (error) => {
@@ -266,13 +279,15 @@ function setUpCallbacksMqtt(client, email) {
   });
 
   try {
-    //   client.subscribe('scs/home1');
-
     client.on("message", async (topic, message) => {
       let arr = message.toString().split(" ");
       let keyword = arr[0]; // temp, humid, ctrl
       let value = arr[1];
-      let stt = arr[2];
+      let stt = Number(arr[2] == NaN ? 0 : arr[2]);
+
+      if(keyword == 'updated'){
+        isUpdated = true;
+      }
 
       try {
         socketId.forEach(id => {
@@ -280,14 +295,14 @@ function setUpCallbacksMqtt(client, email) {
         });
 
       } catch (err) {
-
+        console.err("no socket connection");
       }
       if (keyword == 'ctrl') {
-        await updateDeviceStatus(email, topic, value);
+        await updateDeviceStatus(email, topic, value, stt);
       }
     });
   } catch (e) {
-    console.log("MQTT Client connection failed");
+    console.err("MQTT Client connection failed");
   }
 }
 

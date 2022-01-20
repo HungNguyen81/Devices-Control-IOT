@@ -1,4 +1,5 @@
 let tempChart, humidChart;
+var isActive = false;
 
 //#region SET UP DATA FOR LIVE-DATA CHARTS
 function getParameterByName(name, url = window.location.href) {
@@ -18,9 +19,11 @@ let warn = document.querySelector('.warning');
 let removeWarning = () => {
     warn.classList.add('hidden');
     clearTimeout(dataTimeout);
+    isActive = true;
 }
 let addWarning = () => {
     warn.classList.remove('hidden');
+    isActive = false;
 }
 
 addWarning();
@@ -177,8 +180,13 @@ function toggleSwitch(checkbox, stt) {
  * @param {*} checkbox 
  */
 function toggleStatus(checkbox) {
-    let device = checkbox.parentNode.parentNode;
     checkbox.checked = !checkbox.checked
+    
+    if(!isActive){
+        alert('Thiết bị kết nối KHÔNG hoạt động. Vui lòng kiểm tra.')
+        return
+    }
+    let device = checkbox.parentNode.parentNode;    
 
     $.ajax({
         "url": '/devices',
