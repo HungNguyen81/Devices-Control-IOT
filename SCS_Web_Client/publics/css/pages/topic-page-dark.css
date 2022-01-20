@@ -1,0 +1,14 @@
+body.dark .warning{
+    background-color: rgb(82 82 82 / 89%);
+}
+
+body.dark .charts .chart-temp,
+body.dark .charts .chart-humid {
+    box-shadow: none;
+}
+
+body.dark .devices>* {
+    background-color: #5F5E5E;
+    box-shadow: none;
+    border-color: transparent;
+}

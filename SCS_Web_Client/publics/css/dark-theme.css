@@ -1,0 +1,22 @@
+body.dark{
+    background-color: #18191A;
+}
+
+body.dark * {
+    color: #fff !important;
+}
+
+body.dark .header {
+    background-color: #24252680;
+}
+
+body.dark .footer{
+    background-color: #1d3a57;
+}
+
+body.dark .header p{
+    position: absolute;
+    top: 42px;
+    right: 182px;
+    color: #bbb !important;
+}

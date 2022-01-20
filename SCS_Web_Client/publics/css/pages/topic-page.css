@@ -26,7 +26,7 @@
 .title a{
     position: absolute;
     font-size: 16px;
-    transform: translate(-154px, 29px);
+    transform: translate(-100px, 29px);
     display: inline-flex;
     width: 30px;
     border-radius: 50%;
@@ -47,6 +47,10 @@
 
 .title a:active{
     filter: brightness(0.6);
+}
+
+.dark-theme-btn{
+    transform: translate(50px, 26px);
 }
 
 /* humid and temp */

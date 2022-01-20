@@ -10,6 +10,8 @@
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
             integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
             crossorigin="anonymous" />
+            <link rel="stylesheet" href="/css/dark-theme.css">
+        <link rel="stylesheet" href="/css/pages/topic-page-dark.css">
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
@@ -20,7 +22,7 @@
             const socket = io(window.location.host);
         </script>
         <script type="text/javascript" src="/js/iot-widget.min.js"></script>
-
+        
 </head>
 
 <body>
@@ -29,9 +31,10 @@
             <!-- content -->
             <div class="title">
                 <a href="/dashboard"><i class="fas fa-arrow-left"></i></a>
-                <h2>
+                <h2 style="display: inline-block;">
                     <%- displayName -%>
                 </h2>
+                <div class="dark-theme-btn" onclick="toggleDarkMode()"></div>
             </div>
 
             <div class="warning hidden">
@@ -91,6 +94,7 @@
         </div>
         <%- include('../components/footer') -%>
             <script src="/js/topic.js"></script>
+            <script src="/js/dark-theme.js"></script>
 </body>
 
 </html>

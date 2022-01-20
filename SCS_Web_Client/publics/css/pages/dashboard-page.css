@@ -18,7 +18,7 @@
 .title a{
     position: absolute;
     font-size: 16px;
-    transform: translate(-55px, -1px);
+    transform: translate(-100px, -1px);
     display: inline-flex;
     width: 30px;
     border-radius: 50%;
@@ -39,6 +39,10 @@
 
 .title a:active{
     filter: brightness(0.6);
+}
+
+.dark-theme-btn{
+    transform: translate(50px, -2px);
 }
 
 .topics-container h2{

@@ -6,8 +6,11 @@
         <link rel="stylesheet" href="/css/components/footer.css">
         <link rel="stylesheet" href="/css/components/button.css">
         <link rel="stylesheet" href="/css/pages/login-page.css">
+        <link rel="stylesheet" href="/css/dark-theme.css">
+        <link rel="stylesheet" href="/css/pages/login-page-dark.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="/js/login.js"></script>
+
     </head>
     <body>
         <%- include('../components/header', {isHideLoginBtn: true, isLoggin: false, name: null}) -%>
@@ -28,5 +31,7 @@
             </form>
         </div>
         <%- include('../components/footer') -%>
+        <script src="/js/dark-theme.js"></script>
     </body>
+    
 </html>

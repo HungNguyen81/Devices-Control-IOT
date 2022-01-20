@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
             integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
             crossorigin="anonymous" />
+        <link rel="stylesheet" href="/css/dark-theme.css">
+        <link rel="stylesheet" href="/css/pages/dashboard-page-dark.css">
         <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"
             integrity="sha384-gDaozqUvc4HTgo8iZjwth73C6dDDeOJsAgpxBcMpZYztUfjHXpzrpdrHRdVp8ySO"
             crossorigin="anonymous"></script>
@@ -16,16 +18,18 @@
             // const socket = io("https://scs-smart-control-system.herokuapp.com/");
             const socket = io(window.location.host);
         </script>
+        
 </head>
 
 <body>
     <%- include('../components/header', {isHideLoginBtn: false, isLoggin: true, name: name}) -%>
-
+    
         <!-- content -->
         <div class="topics-container">
             <div class="title">
                 <a href="/"><i class="fas fa-home"></i></a>
                 <h2 style="display: inline;">DASHBOARD</h2>
+                <div class="dark-theme-btn" onclick="toggleDarkMode()"></div>
             </div>
             <div class="topics">
                 <% for(let topic of topics) { %>
@@ -91,6 +95,7 @@
 
                 window.onload = getDataFromSocket;
             </script>
+            <script src="/js/dark-theme.js"></script>
 </body>
 
 </html>

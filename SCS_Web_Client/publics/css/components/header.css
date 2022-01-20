@@ -29,7 +29,25 @@
     border-radius: 10px;
 }
 
+.dark-theme-btn{
+    position: absolute;
+    /* top:120px; */
+    /* right: 50px; */
+    display:inline-block;
+    width: 34px;    
+    height: 34px;
+    border: 2px solid #6C6C84;
+    border-radius: 50%;
+}
+.dark-theme-btn.dark{
+    background-image: url('/images/dark-icon.png');
+    background-size: cover;
+}
 
+.dark-theme-btn.light{
+    background-image: url('/images/light-icon.png');
+    background-size: cover;
+}
 @media only screen and (max-width: 900px){
     .header-title{
         visibility: hidden;
