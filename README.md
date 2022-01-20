@@ -6,6 +6,8 @@
 - B4: chạy lệnh: **npm start** cho project
 - B5: mở 2 project SCS_Hardware/SCS_Simulator_Tool và làm tương tự B2-3
 
+# Running at https://scs-smart.herokuapp.com/
+
 # Ảnh chụp màn hình ngày 18/01/2022
 
 ![screen 1](https://github.com/HungNguyen81/Devices-Control-IOT/blob/main/img/scs0.jpeg?raw=true "Trang chủ")
