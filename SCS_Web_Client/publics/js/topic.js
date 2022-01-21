@@ -28,9 +28,11 @@ let addWarning = () => {
 }
 
 addWarning();
+console.log("topic:", topic);
 
 socket.on(`${topic}/updated`, data => {
     console.log('updated');
+    isUpdated = true;
     document.querySelector('#loading').classList.add('hidden')
 })
 
