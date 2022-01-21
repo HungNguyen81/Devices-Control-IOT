@@ -12,12 +12,24 @@
 #define DHTTYPE DHT11 // DHT 11
 #define physics_button 1
 #define virtual_button 2
-// define the GPIO connected with Relays
-const int NumOfRelays = 4;
-const int RelayPin[] = {14,12,10,9}; // D5, D6, SD3, SD2
 
+#define RTCMEMORYSTART 65
+#define RTCMEMORYLEN 127
+#define WRITE 1
+#define READ 0
+
+extern "C" {
+#include "user_interface.h" // this is for the RTC memory read/write functions
+}
+int buckets;
+bool toggleFlag;
+
+
+// define the GPIO connected with Relays
 # define ON 0
 # define OFF 1
+const int NumOfRelays = 4;
+const int RelayPin[] = {14,12,10,9}; // D5, D6, SD3, SD2
 bool RelayState[] = {OFF,OFF,OFF,OFF}; // //Define integer to remember the toggle state for relay 1, 2, 3, 4 ( ON_0 / OFF_1 )
 
 int i=0;
@@ -77,6 +89,9 @@ char relay_msg[MSG_BUFFER_SIZE];
 unsigned int analog_val = 0, print_time = 20;
 time_t wake_up_time;
 
+
+
+
 void setup_wifi() {
   delay(10);
   // We start by connecting to a WiFi network
@@ -101,6 +116,9 @@ void setup_wifi() {
 }
 
 
+
+
+
 void setDateTime() {
   configTime(3600*7, 0, "pool.ntp.org");    //connect to NTP server (Network Time Protocol)
   Serial.print("Waiting for NTP time sync: ");
@@ -114,6 +132,9 @@ void setDateTime() {
   Serial.println(asctime(timeinfo));
   wake_up_time = now;
 }
+
+
+
 
 
 //Check the time, display it, and set the deep sleep mode from 0 AM to 5 AM
@@ -132,8 +153,11 @@ void time_control()
     lcd.print("Deep Sleep Mode");
     lcd.setCursor(0,1);
     lcd.print("  0 AM to 5 AM");
+    Serial.println("Deep Sleep Mode");
     delay(5000);
     unsigned int time_sleep = (5 - timeinfo->tm_hour)*60 - timeinfo->tm_min;
+    
+    RTC_memory(WRITE);
     ESP.deepSleep(time_sleep*60e6);
   }
 
@@ -155,6 +179,35 @@ void time_control()
 }
 
 
+
+
+// read/write data on RTC memory
+void RTC_memory(bool flag){
+  if (flag == WRITE) {
+    for (i = 0; i < NumOfRelays; i++) {
+      int rtcPos = RTCMEMORYSTART + i * buckets;
+      system_rtc_mem_write(rtcPos, &RelayState+i, 1);
+      toggleFlag = false;
+      system_rtc_mem_write(64, &toggleFlag, 1);
+      yield();
+    }
+    Serial.println("Writing RTC memory done");
+  }
+  else {
+    for (i = 0; i < NumOfRelays; i++) {
+      int rtcPos = RTCMEMORYSTART + i * buckets;
+      system_rtc_mem_read(rtcPos, &RelayState+i, sizeof(bool));
+      toggleFlag = true;
+      system_rtc_mem_write(64, &toggleFlag, 1);
+      yield();
+    }
+    Serial.println("Reading RTC memory done");
+  }
+}
+
+
+
+
 //Send all relays state to the server when connecting
 void updateServer() {
     for(i=0; i<NumOfRelays; i++) {
@@ -165,6 +218,9 @@ void updateServer() {
     // Hưng coded this line
     client->publish("scs/home1", "updated");
 } 
+
+
+
 
 // Turn relay ON/OFF
 void relayOnOff(int relay, int source) {
@@ -194,6 +250,9 @@ void relayOnOff(int relay, int source) {
   }
 }
 
+
+
+
 // Control relays via physical buttons
 int PushButtons(int analog_val) {
   if (analog_val < 100) return 0;
@@ -211,6 +270,9 @@ int PushButtons(int analog_val) {
   }
   else return 0;
 }
+
+
+
 
 // Send temperature, humidity to HiveMQ and display them on LCD screen
 void data_processing(float t, float h) {
@@ -242,6 +304,9 @@ void data_processing(float t, float h) {
   client->publish("scs/home1/data", h_msg);
 }
 
+
+
+
 // Receive messages and Control relays via wifi
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -270,6 +335,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 
+
+
+
 void reconnect() {
   // Loop until we’re reconnected
   while (!client->connected()) {
@@ -293,6 +361,7 @@ void reconnect() {
     }
   }
 }
+
 
 
 void setup() {
@@ -340,14 +409,25 @@ void setup() {
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Loading data...");
-  
+
+  // Check data on RTC memory, toggleFlag = FALSE if RTC memory has already data, cant write on
+  buckets = 1;
+  system_rtc_mem_read(64, &toggleFlag, 4);
+  if (!toggleFlag) {
+    RTC_memory(READ);
+  }
+
+  //Setting state for each relay
   for(i=0; i<NumOfRelays; i++) {
     pinMode(RelayPin[i], OUTPUT);
-    digitalWrite(RelayPin[i], RelayState[i]); //During Starting all Relays should TURN OFF
+    digitalWrite(RelayPin[i], RelayState[i]);
   }
   updateServer();   //send all relays state to the server when connecting
   delay(5000);
 }
+
+
+
 
 void loop() {
   if (!client->connected()) {
