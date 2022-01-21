@@ -31,9 +31,14 @@ client.on('error', error => {
 client.on('message', (topic, message) => {
     //Called each time a message is received
     console.log('Received from topic:', topic, 'message:', message.toString());
+    if(message == 'r'){
+        console.log("Request received");
+        client.publish(`${topic}`, 'updated')
+    } else if (message == 'updated'){
+        console.log("UPDATED msg sent to ", topic);
+    }
 });
 
-// client.subscribe('scs/home2/ctrl');
 
 // client.publish('scs/home1', 'Hello im esp8266');
 var temp = 0, humid = 0;
@@ -55,19 +60,15 @@ app.post('/start', (req, res) => {
     let tempMax = req.body.maxTemp
     let humiMin = req.body.minHumi
     let humiMax = req.body.maxHumi
-    // let cycle = req.body.cycle
 
     temp = Math.round((Math.random() * (tempMax - tempMin) + tempMin) * 100) / 100;
     humid = Math.round((Math.random() * (humiMax - humiMin) + humiMin) * 100) / 100;
 
-    // console.log(req.body);
-    // console.log(humid);
-    client.publish(`scs/${topic}`, 'updated')
+    // client.publish(`scs/${topic}`, 'updated')
+    client.subscribe(`scs/${topic}`)
     client.publish(`scs/${topic}/data`, `temp ${temp}`)
     client.publish(`scs/${topic}/data`, `humid ${humid}`)
 
-    // timeout = setTimeout(() => {sendData(temp, humid)}, cycle)
-    // console.log('ok');
     res.status(200).json({ msg: [`temp ${temp}`, `humid ${humid}`] })
 })
 
