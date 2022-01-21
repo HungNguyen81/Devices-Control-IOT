@@ -288,8 +288,6 @@ function setUpCallbacksMqtt(client, email) {
 
       try {
         socketId.forEach(id => {
-          if(keyword == 'updated') 
-            console.error('socket listener:', `${topic}/${keyword}`);
           io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt])
         });
       } catch (err) {
