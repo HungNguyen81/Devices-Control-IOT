@@ -5,6 +5,7 @@ body.dark .warning{
 body.dark .charts .chart-temp,
 body.dark .charts .chart-humid {
     box-shadow: none;
+    background-color: #fff;
 }
 
 body.dark .devices>* {
