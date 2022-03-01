@@ -129,6 +129,19 @@ app.get("/dashboard", async (req, res) => {
   }
 });
 
+// client request hardware update relay statuses
+app.get("/devices-loaded", async (req, res) => {
+  if(req.session.User){
+    let topic = req.query.t;
+    client.publish(topic, 'r'); // yeu cau cap nhat trang thai 4 kenh relay
+    isUpdated = false;
+
+    res.status(200).end();
+  } else {
+    res.status(400).end();
+  }
+})
+
 
 // GET /devices?t=scs/home1
 app.get("/devices", async (req, res) => {
@@ -141,10 +154,7 @@ app.get("/devices", async (req, res) => {
       devices;
 
     client.subscribe(`${topic}`); // kênh điều khiển
-    client.publish(topic, 'r'); // yeu cau cap nhat trang thai 4 kenh relay
     
-    console.info("update msg sent");
-    isUpdated = false;
 
     topics.forEach((t) => {
       if (t.name == topic) {
@@ -169,7 +179,7 @@ app.post("/devices", async (req, res) => {
   if (req.session.User) {
     let topic     = req.body.topic;
     let deviceId  = req.body.id;
-    let email     = req.session.User;
+    // let email     = req.session.User;
     let stt       = req.body.stt;
 
     try {

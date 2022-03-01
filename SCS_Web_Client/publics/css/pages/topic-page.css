@@ -286,6 +286,8 @@ input:checked+.slider:before {
 .hidden{
     visibility: hidden;
 }
+
+
 /* Safari */
 @-webkit-keyframes spin {
     0% {

@@ -32,7 +32,8 @@ client.on('message', (topic, message) => {
     //Called each time a message is received
     console.log('Received from topic:', topic, 'message:', message.toString());
     if(message == 'r'){
-        console.log("Request received");
+        console.log(`Request received, ${topic}`);
+        
         client.publish(`${topic}`, 'updated')
     } else if (message == 'updated'){
         console.log("UPDATED msg sent to ", topic);
@@ -40,12 +41,11 @@ client.on('message', (topic, message) => {
 });
 
 
-// client.publish('scs/home1', 'Hello im esp8266');
 var temp = 0, humid = 0;
 var timeout;
 
 app.get('/', (req, res) => {
-
+    // maximum 4 devices
     devices = [
         { id: 1, name: "Device 1", status: 0 },
         { id: 2, name: "Device 2", status: 0 },
@@ -64,7 +64,6 @@ app.post('/start', (req, res) => {
     temp = Math.round((Math.random() * (tempMax - tempMin) + tempMin) * 100) / 100;
     humid = Math.round((Math.random() * (humiMax - humiMin) + humiMin) * 100) / 100;
 
-    // client.publish(`scs/${topic}`, 'updated')
     client.subscribe(`scs/${topic}`)
     client.publish(`scs/${topic}/data`, `temp ${temp}`)
     client.publish(`scs/${topic}/data`, `humid ${humid}`)
@@ -87,5 +86,3 @@ app.post('/control', (req, res) => {
     }
 
 })
-
-// sendControlMsg();

@@ -30,6 +30,14 @@ let addWarning = () => {
 addWarning();
 console.log("topic:", topic);
 
+$.ajax({
+    "url": `/devices-loaded?t=${topic}`,
+    "method": 'GET',
+    "error": (xhr, status, error) => {
+        console.log("Update err");
+    }
+});
+
 socket.on(`${topic}/updated`, data => {
     console.log('updated');
     isUpdated = true;
