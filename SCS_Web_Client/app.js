@@ -104,6 +104,7 @@ app.post("signup", (req, res) => {
 //logout
 app.get("/logout", (req, res) => {
   req.session.destroy();
+  client.end();
   res.redirect("/");
 });
 
@@ -141,6 +142,8 @@ app.get("/devices", async (req, res) => {
 
     client.subscribe(`${topic}`); // kênh điều khiển
     client.publish(topic, 'r'); // yeu cau cap nhat trang thai 4 kenh relay
+    
+    console.info("update msg sent");
     isUpdated = false;
 
     topics.forEach((t) => {
@@ -162,12 +165,6 @@ app.get("/devices", async (req, res) => {
 
 
 app.post("/devices", async (req, res) => {
-  // neu chua cap nhat xong trang thai relay
-  // if(!isUpdated){
-  //   res.status(400).end()
-  //   return
-  // }
-
   //update data trong database
   if (req.session.User) {
     let topic     = req.body.topic;
@@ -209,7 +206,7 @@ io.on("connection", (socket) => {
 
 //#region FUNCTIONS
 
-const ON = 1, OFF = 0;
+// const ON = 1, OFF = 0;
 /**
  * Cập nhật trạng thái bật tắt của thiết bị trong db
  * @param {*} email 
@@ -289,6 +286,7 @@ function setUpCallbacksMqtt(client, email) {
       try {
         socketId.forEach(id => {
           io.to(`${id}`).emit(`${topic}/${keyword}`, [new Date().toISOString(), value, stt])
+          if(keyword == 'updated') console.log(`${id}`, `${topic}/${keyword}`);
         });
       } catch (err) {
         console.err("no socket connection")
